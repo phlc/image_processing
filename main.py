@@ -1,5 +1,7 @@
 # Biblioteca: skimage
 # https://scikit-image.org/docs/0.19.x/
+import os
+import tkinter
 import numpy
 from skimage.feature import greycomatrix, greycoprops
 from skimage import io
@@ -41,6 +43,8 @@ class main:
     def calculateHaralickDescriptors(self, imagesPaths):
 
         for imagePath in imagesPaths:
+            # formatedPath = imagePath.replace("\\", "/")
+            # print("formatedPath:", formatedPath)
             image = io.imread(imagePath)
 
             # github.com/scikit-image/scikit-image/blob/00177e14097237ef20ed3141ed454bc81b308f82/skimage/feature/texture.py#L15
@@ -71,7 +75,7 @@ class main:
 
 
     def drawWidgets(self):
-        Label(self.frame_cabecalho, text='Alunos: Ana Laura Fernandes, Larissa Gome, Pedro Henrique Lima',font=('arial 8')).grid(row=0, column=0)
+        Label(self.frame_cabecalho, text='Alunos: Ana Laura Fernandes, Larissa Gomes, Pedro Henrique Lima',font=('arial 8')).grid(row=0, column=0)
         
         self.frame_cabecalho.pack(side=TOP)
         
@@ -87,15 +91,23 @@ class main:
         menuOpcoes.add_command(label='Selecionar diretorio', command=self.selectFilesDirectory) 
         menuOpcoes.add_command(label='Sair', command=self.master.destroy) 
 
-    def selectFilesDirectory(self): 
-        filedirectory = fd.askdirectory()
 
-        showinfo(
-            title='Selected directory',
-            message=filedirectory
-        )
+    def selectFilesDirectory(self): 
+        # selecionar um diretorio de imagens
+        filedirectory = fd.askdirectory()
+        imagesPathsList = os.listdir(filedirectory)
+
+        # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
+        filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
+        formatedFilteredPaths = map(lambda path: filedirectory + '/' + path, filteredPaths)
+
+        # obter os descritores para as imagens
+        if(formatedFilteredPaths):  
+            self.calculateHaralickDescriptors(formatedFilteredPaths)
+
 
     def selectImages(self):
+        # obter imagens .png e .jpg
         filetypes = (
         ('image files', '*.png'),
         ('image files', '*.jpg'),
@@ -107,12 +119,9 @@ class main:
             initialdir='/',
             filetypes=filetypes)
 
-        showinfo(
-            title='Selected images',
-            message=filenames
-        )
-
-        self.calculateHaralickDescriptors(imagesPaths=filenames)
+        # calcular os descritores para as imagens
+        if(filenames):
+            self.calculateHaralickDescriptors(imagesPaths=filenames)
 
 
 if __name__ == '__main__':
