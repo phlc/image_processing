@@ -96,12 +96,15 @@ class main:
         # selecionar um diretorio de imagens
         filedirectory = fd.askdirectory()
         if(filedirectory):
-            imagesPathsList = os.listdir(filedirectory)
-
-            if(imagesPathsList):
+            # obter os subdiretórios do diretório selecionado
+            subdirectories = os.listdir(filedirectory)
+            
+            if(subdirectories):
                 # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
-                filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
-                formatedFilteredPaths = map(lambda path: filedirectory + '/' + path, filteredPaths)
+                for subdirectory in subdirectories:
+                    imagesPathsList = os.listdir(filedirectory + '/' + subdirectory)
+                    filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
+                    formatedFilteredPaths = map(lambda path: filedirectory + '/' + subdirectory + '/' + path, filteredPaths)
 
                 # obter os descritores para as imagens
                 if(formatedFilteredPaths):  
