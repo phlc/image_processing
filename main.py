@@ -1,7 +1,6 @@
 # Biblioteca: skimage
 # https://scikit-image.org/docs/0.19.x/
 import os
-import tkinter
 import numpy
 from skimage.feature import greycomatrix, greycoprops
 from skimage import io
@@ -106,9 +105,9 @@ class main:
                     filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
                     formatedFilteredPaths = map(lambda path: filedirectory + '/' + subdirectory + '/' + path, filteredPaths)
 
-                # obter os descritores para as imagens
-                if(formatedFilteredPaths):  
-                    self.calculateHaralickDescriptors(formatedFilteredPaths)
+                    # obter os descritores para as imagens
+                    if(formatedFilteredPaths):  
+                        self.calculateHaralickDescriptors(formatedFilteredPaths)
 
 
     def selectImages(self):
