@@ -95,15 +95,17 @@ class main:
     def selectFilesDirectory(self): 
         # selecionar um diretorio de imagens
         filedirectory = fd.askdirectory()
-        imagesPathsList = os.listdir(filedirectory)
+        if(filedirectory):
+            imagesPathsList = os.listdir(filedirectory)
 
-        # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
-        filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
-        formatedFilteredPaths = map(lambda path: filedirectory + '/' + path, filteredPaths)
+            if(imagesPathsList):
+                # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
+                filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
+                formatedFilteredPaths = map(lambda path: filedirectory + '/' + path, filteredPaths)
 
-        # obter os descritores para as imagens
-        if(formatedFilteredPaths):  
-            self.calculateHaralickDescriptors(formatedFilteredPaths)
+                # obter os descritores para as imagens
+                if(formatedFilteredPaths):  
+                    self.calculateHaralickDescriptors(formatedFilteredPaths)
 
 
     def selectImages(self):
