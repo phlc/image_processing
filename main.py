@@ -38,40 +38,45 @@ class main:
                             entropyMatrix[a][d] -= GCHistogram[i][j][d][a] * log(GCHistogram[i][j][d][a], 2)
         return entropyMatrix
 
-
-    def calculateHaralickDescriptors(self, imagesPaths):
+    def calculateHaralickDescriptorsForAllImages(self, imagesPaths):
 
         for imagePath in imagesPaths:
             # formatedPath = imagePath.replace("\\", "/")
             # print("formatedPath:", formatedPath)
             image = io.imread(imagePath)
 
-            # github.com/scikit-image/scikit-image/blob/00177e14097237ef20ed3141ed454bc81b308f82/skimage/feature/texture.py#L15
-            # Parâmetros: imagem, distâncias [], ângulos []
-            # Retorna Histograma de co-ocorrência de tons de cinza
+            # Calcular descritores a partir de matriz de co-ocorrência circular com distância 1
+            # Ângulos (Graus): 0, 90, 180, 270
+            print("Matriz de co-corrência D1")
+            self.calculateHaralickDescriptors(image=image, distance=[1], angles=[0, numpy.pi / 4, numpy.pi / 2, 3 * numpy.pi / 4]);
 
-            # Distâncias: 1, 2, 4, 8, 16
-            # Ângulos (Graus): 0, 45, 90, 135
-            GCHistogram = greycomatrix(image, [1, 2, 4, 8, 16], [0, numpy.pi/4, numpy.pi/2, numpy.pi, 3*numpy.pi/4], None, False, True)
+            #self.calculateHaralickDescriptors(image=image, distance=[1], angles=[0]);
 
-            # github.com/scikit-image/scikit-image/blob/00177e14097237ef20ed3141ed454bc81b308f82/skimage/feature/texture.py#L159
-            # Parâmetros: Matriz de co-ocorrência, Propriedade calculada
-            # Retorna matriz de propriedade calculada [Ângulo m, Distância n]
+    def calculateHaralickDescriptors(self, image, distance, angles):
+        # Reamostrar imagem para 32 tons de cinza
+        image = numpy.array(numpy.rint(((image / 255) * 32)), dtype=int)
+        
+        # github.com/scikit-image/scikit-image/blob/00177e14097237ef20ed3141ed454bc81b308f82/skimage/feature/texture.py#L15
+        # Parâmetros: imagem, distâncias [], ângulos [], levels = 256, Simetria = false, Normalizar em 1 = true
+        # Retorna Histograma de co-ocorrência de tons de cinza
+        GCHistogram = greycomatrix(image, distance, angles, 32, False, True)
 
-            # Cálculo de homogeneidade
-            Homogeneity = greycoprops(GCHistogram, 'homogeneity')
+        # github.com/scikit-image/scikit-image/blob/00177e14097237ef20ed3141ed454bc81b308f82/skimage/feature/texture.py#L159
+        # Parâmetros: Matriz de co-ocorrência, Propriedade calculada
+        # Retorna matriz de propriedade calculada [Ângulo m, Distância n]
 
-            # Cálculo de energia
-            Energy = greycoprops(GCHistogram, 'energy')
+        # Cálculo de homogeneidade
+        Homogeneity = greycoprops(GCHistogram, 'homogeneity')
 
-            # Cálculo de entropia
-            Entropy = self.entropy(GCHistogram, len(GCHistogram), len(GCHistogram[0]), len(GCHistogram[0][0]), len(GCHistogram[0][0][0]))
+        # Cálculo de energia
+        Energy = greycoprops(GCHistogram, 'energy')
 
-            print('Homogeneity: ', Homogeneity)
-            print('Energy: ', Energy)
-            print('Entropy: ', Entropy)
-
-
+        # Cálculo de entropia
+        Entropy = self.entropy(GCHistogram, len(GCHistogram), len(GCHistogram[0]), len(GCHistogram[0][0]), len(GCHistogram[0][0][0]))
+        print(angles, distance)
+        print('Homogeneity: ', Homogeneity)
+        print('Energy: ', Energy)
+        print('Entropy: ', Entropy)
 
     def drawWidgets(self):
         Label(self.frame_cabecalho, text='Alunos: Ana Laura Fernandes, Larissa Gomes, Pedro Henrique Lima',font=('arial 8')).grid(row=0, column=0)
@@ -107,7 +112,7 @@ class main:
 
                     # obter os descritores para as imagens
                     if(formatedFilteredPaths):  
-                        self.calculateHaralickDescriptors(formatedFilteredPaths)
+                        self.calculateHaralickDescriptorsForAllImages(formatedFilteredPaths)
 
 
     def selectImages(self):
@@ -125,7 +130,7 @@ class main:
 
         # calcular os descritores para as imagens
         if(filenames):
-            self.calculateHaralickDescriptors(imagesPaths=filenames)
+            self.calculateHaralickDescriptorsForAllImages(imagesPaths=filenames)
 
 
 if __name__ == '__main__':
