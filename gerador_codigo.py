@@ -36,10 +36,15 @@ def pontos_circulos(r):
 def mostrar_codigo(r):
     pontos = pontos_circulos(r)
     indice = 0
+
+    print(f"matriz = np.zeros({len(pontos)}*tons*tons).reshape({len(pontos)}, tons, tons)")
+    print("for pixel_x in range(len(img)):")
+    print("    for pixel_y in range(len(img[0])):")
     for ponto in pontos:
-        print( f"if (pixel_x + {ponto[0]} < len(img)) and (pixel_y + {ponto[1]} < len(img[0])):")
-        print( f"    matriz[{indice}][img[pixel_x][pixel_y]][img[pixel_x + {ponto[0]}][img[pixel_y+ {ponto[1]}]]] += 1")
+        print( f"        if (pixel_x + {ponto[0]} < len(img)) and (pixel_y + {ponto[1]} < len(img[0])):")
+        print( f"            matriz[{indice}][img[pixel_x][pixel_y]][img[pixel_x + {ponto[0]}][img[pixel_y+ {ponto[1]}]]] += 1")
         indice+=1
+    print("return matriz")
 
 if len(sys.argv) != 2:
     print("Usage: python gerador_codigo.py <radius>")
