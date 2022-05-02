@@ -1,3 +1,6 @@
+from ast import Try
+import sys
+
 def pontos_circulos(r):
     x = 0
     y = r
@@ -35,8 +38,14 @@ def mostrar_codigo(r):
     indice = 0
     for ponto in pontos:
         print( f"if (pixel_x + {ponto[0]} < len(img)) and (pixel_y + {ponto[1]} < len(img[0])):")
-        print( f"    c{r}[{indice}][img[pixel_x][pixel_y]][img[pixel_x + {ponto[0]}][img[pixel_y+ {ponto[1]}]]] += 1")
+        print( f"    matriz[{indice}][img[pixel_x][pixel_y]][img[pixel_x + {ponto[0]}][img[pixel_y+ {ponto[1]}]]] += 1")
         indice+=1
 
-
-mostrar_codigo(2)
+if len(sys.argv) != 2:
+    print("Usage: python gerador_codigo.py <radius>")
+else:
+    try:
+        raio = int(sys.argv[1])
+        mostrar_codigo(raio)
+    except:
+        print("Usage: radius must be a number")
