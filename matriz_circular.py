@@ -633,4 +633,4 @@ def c16(img, tons):
             matriz[linha_pixel][coluna_pixel] /= contador_pontos
     return matriz
 
-print(c16([], 8))
+# print(c16([], 8))
