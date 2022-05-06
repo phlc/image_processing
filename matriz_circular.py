@@ -28,8 +28,8 @@ def c1(img, tons):
                 contador_pontos += 1
 
     # Calcular Probabilidade de cada co-ocorrência
-    for linha_pixel in range(len(img)):
-        for coluna_pixel in range(len(img[0])):
+    for linha_pixel in range(tons):
+        for coluna_pixel in range(tons):
             matriz[linha_pixel][coluna_pixel] /= contador_pontos
     return matriz
 
@@ -85,8 +85,8 @@ def c2(img, tons):
                 contador_pontos += 1
 
     # Calcular Probabilidade de cada co-ocorrência
-    for linha_pixel in range(len(img)):
-        for coluna_pixel in range(len(img[0])):
+    for linha_pixel in range(tons):
+        for coluna_pixel in range(tons):
             matriz[linha_pixel][coluna_pixel] /= contador_pontos
     return matriz
 
@@ -178,8 +178,8 @@ def c4(img, tons):
                 contador_pontos += 1
 
     # Calcular Probabilidade de cada co-ocorrência
-    for linha_pixel in range(len(img)):
-        for coluna_pixel in range(len(img[0])):
+    for linha_pixel in range(tons):
+        for coluna_pixel in range(tons):
             matriz[linha_pixel][coluna_pixel] /= contador_pontos
     return matriz
 
@@ -331,8 +331,8 @@ def c8(img, tons):
                 contador_pontos += 1
 
     # Calcular Probabilidade de cada co-ocorrência
-    for linha_pixel in range(len(img)):
-        for coluna_pixel in range(len(img[0])):
+    for linha_pixel in range(tons):
+        for coluna_pixel in range(tons):
             matriz[linha_pixel][coluna_pixel] /= contador_pontos
     return matriz
 
@@ -628,9 +628,8 @@ def c16(img, tons):
                 contador_pontos += 1
 
     # Calcular Probabilidade de cada co-ocorrência
-    for linha_pixel in range(len(img)):
-        for coluna_pixel in range(len(img[0])):
+    for linha_pixel in range(tons):
+        for coluna_pixel in range(tons):
             matriz[linha_pixel][coluna_pixel] /= contador_pontos
     return matriz
 
-# print(c16([], 8))

@@ -63,8 +63,8 @@ def mostrar_codigo(r):
         print(  "                contador_pontos += 1")
     
     print("\n    # Calcular Probabilidade de cada co-ocorrência")
-    print("    for linha_pixel in range(len(img)):")
-    print("        for coluna_pixel in range(len(img[0])):")
+    print("    for linha_pixel in range(tons):")
+    print("        for coluna_pixel in range(tons):")
     print("            matriz[linha_pixel][coluna_pixel] /= contador_pontos")
     print("    return matriz")
 
