@@ -67,16 +67,22 @@ def calculateHaralickDescriptorsForAllImages(imagesPaths):
 # @return array de descritores da imagem
 def calculateHaralickDescriptors(image):
     # Reamostrar imagem para 32 tons de cinza
-    image = np.array(np.rint(((image / 255) * 32)), dtype=int)
-    
+    image = np.array(np.rint(((image / 255) * 31)), dtype=int)
+    print(image.shape())
+
     # Parâmetros: imagem, numero de tons
     # Retorna Matriz de co-ocorrência de tons de cinza
     # Calcular descritores a partir das matrizes de coocorrência circulares C1, C2, C4, C8 e C16
-    C1CoocurencyMatrix = matriz_circular.c1(image, 32)
-    C2CoocurencyMatrix = matriz_circular.c2(image, 32)
-    C4CoocurencyMatrix = matriz_circular.c4(image, 32)
-    C8CoocurencyMatrix = matriz_circular.c8(image, 32)
-    C16CoocurencyMatrix = matriz_circular.c16(image, 32)
+    C1CoocurencyMatrix = matriz_circular.c1(np.array(image), 32)
+    print("calculei matriz C1")
+    C2CoocurencyMatrix = matriz_circular.c2(np.array(image), 32)
+    print("calculei matriz C2")
+    C4CoocurencyMatrix = matriz_circular.c4(np.array(image), 32)
+    print("calculei matriz C4")
+    C8CoocurencyMatrix = matriz_circular.c8(np.array(image), 32)
+    print("calculei matriz C8")
+    C16CoocurencyMatrix = matriz_circular.c16(np.array(image), 32)
+    print("calculei matriz C16")
 
     # Parâmetros: Matriz de co-ocorrência
     # Cálculo de homogeneidade
