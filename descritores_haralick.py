@@ -11,7 +11,8 @@ def entropia(matriz):
     resultado = 0.0
     for linha in range(len(matriz)):
         for coluna in range(len(matriz[0])):
-           resultado += matriz[linha][coluna] * log(matriz[linha][coluna], 2)
+            if matriz[linha][coluna] > 0:
+                resultado += matriz[linha][coluna] * log(matriz[linha][coluna], 2)
     return -resultado
 
 
@@ -52,12 +53,12 @@ def contraste(matriz):
 # @param caminhos de todas as imagens
 # @return array de descritores de todas as imagens
 def calculateHaralickDescriptorsForAllImages(imagesPaths):
-    AllImagesHaralickDescriptors = np.empty(len(imagesPaths))
+    AllImagesHaralickDescriptors = []
 
-    for index, imagePath in enumerate(imagesPaths):
+    for imagePath in imagesPaths:
         image = io.imread(imagePath)
 
-        AllImagesHaralickDescriptors[index] = calculateHaralickDescriptors(image=image)
+        AllImagesHaralickDescriptors.append(calculateHaralickDescriptors(image=image))
 
     return AllImagesHaralickDescriptors
 
@@ -68,21 +69,15 @@ def calculateHaralickDescriptorsForAllImages(imagesPaths):
 def calculateHaralickDescriptors(image):
     # Reamostrar imagem para 32 tons de cinza
     image = np.array(np.rint(((image / 255) * 31)), dtype=int)
-    print(image.shape())
 
     # Parâmetros: imagem, numero de tons
     # Retorna Matriz de co-ocorrência de tons de cinza
     # Calcular descritores a partir das matrizes de coocorrência circulares C1, C2, C4, C8 e C16
     C1CoocurencyMatrix = matriz_circular.c1(np.array(image), 32)
-    print("calculei matriz C1")
     C2CoocurencyMatrix = matriz_circular.c2(np.array(image), 32)
-    print("calculei matriz C2")
     C4CoocurencyMatrix = matriz_circular.c4(np.array(image), 32)
-    print("calculei matriz C4")
     C8CoocurencyMatrix = matriz_circular.c8(np.array(image), 32)
-    print("calculei matriz C8")
     C16CoocurencyMatrix = matriz_circular.c16(np.array(image), 32)
-    print("calculei matriz C16")
 
     # Parâmetros: Matriz de co-ocorrência
     # Cálculo de homogeneidade
