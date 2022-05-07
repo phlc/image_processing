@@ -79,7 +79,7 @@ class main:
 
         # calcular os descritores para as imagens
         if(filenames):
-            self.calculateHaralickDescriptorsForAllImages(imagesPaths=filenames)
+            calculateHaralickDescriptorsForAllImages(imagesPaths=filenames)
 
 
 if __name__ == '__main__':
