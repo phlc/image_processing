@@ -2,6 +2,7 @@
 # https://scikit-image.org/docs/0.19.x/
 from array import array
 import os
+from tkinter.ttk import Treeview
 import numpy
 from PIL import ImageTk
 import PIL.Image
@@ -109,13 +110,51 @@ class main:
 
             
     def exhibitImageDescriptors(self, imagePath):
+        # Obtenção dos descritores de Haralick para a imagem selecionada
         descriptors = calculateHaralickDescriptorsForAllImages(imagesPaths=imagePath)[0]
-        displayMessage = 'Homogeneidade: ', descriptors[0], '\n Entropia: ', descriptors[1], '\n Energia: ', descriptors[2], '\n Contraste: ', descriptors[3]
 
+        # Criação da janela auxiliar para a exibição da tabela de descritores
         descriptorsWindow = Toplevel(self.master)
         descriptorsWindow.title("Descritores de Haralick da imagem selecionada")
-        descriptorsWindow.geometry("700x70")
-        Label(descriptorsWindow, text=displayMessage).pack()
+        descriptorsWindow.geometry("630x150")
+        
+        # Criação do frame da tabela
+        table_frame = Frame(descriptorsWindow)
+        table_frame.pack()
+
+        # Instanciação da tabela e definição das suas colunas
+        descriptorsTable = Treeview(table_frame)
+        descriptorsTable['columns'] = ('Matriz de Coocorrência','Homogeneidade', 'Entropia', 'Energia', 'Contraste')
+
+        descriptorsTable.column("#0", width=0,  stretch=NO)
+        descriptorsTable.column("Matriz de Coocorrência",anchor=CENTER, width=140)
+        descriptorsTable.column("Homogeneidade",anchor=CENTER,width=120)
+        descriptorsTable.column("Entropia",anchor=CENTER,width=120)
+        descriptorsTable.column("Energia",anchor=CENTER,width=120)
+        descriptorsTable.column("Contraste",anchor=CENTER,width=120)
+
+        # Criação do cabeçalho da tabela
+        descriptorsTable.heading("#0",text="",anchor=CENTER)
+        descriptorsTable.heading("Matriz de Coocorrência",text="Matriz de Coocorrência",anchor=CENTER)
+        descriptorsTable.heading("Homogeneidade",text="Homogeneidade",anchor=CENTER)
+        descriptorsTable.heading("Entropia",text="Entropia",anchor=CENTER)
+        descriptorsTable.heading("Energia",text="Energia",anchor=CENTER)
+        descriptorsTable.heading("Contraste",text="Contraste",anchor=CENTER)
+
+        # Populando a tabela com os dados dos descritores
+        descriptorsTable.insert(parent='',index='end',iid=0,text='',
+        values=('C1',descriptors[0][0],descriptors[1][0],descriptors[2][0], descriptors[3][0]))
+        descriptorsTable.insert(parent='',index='end',iid=1,text='',
+        values=('C2',descriptors[0][1],descriptors[1][1],descriptors[2][1], descriptors[3][1]))
+        descriptorsTable.insert(parent='',index='end',iid=2,text='',
+        values=('C4',descriptors[0][2],descriptors[1][2],descriptors[2][2], descriptors[3][2]))
+        descriptorsTable.insert(parent='',index='end',iid=3,text='',
+        values=('C8',descriptors[0][3],descriptors[1][3],descriptors[2][3], descriptors[3][3]))
+        descriptorsTable.insert(parent='',index='end',iid=4,text='',
+        values=('C16',descriptors[0][4],descriptors[1][4],descriptors[2][4], descriptors[3][4]))
+
+        descriptorsTable.pack()
+
 
 
 if __name__ == '__main__':
