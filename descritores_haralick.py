@@ -50,13 +50,14 @@ def calculateHaralickDescriptors(image):
     C16CoocurencyMatrix = matriz_circular.c16(np.array(image), 32)
 
     # Parâmetros: Matriz de co-ocorrência
-    # Cálculo de homogeneidade
+    # Cálculo de todos os descritores de Haralick utilizados (Homogeneidade, entropia, energia e contraste)
     allDescriptorsC1 = allDescriptors(C1CoocurencyMatrix)
     allDescriptorsC2 = allDescriptors(C2CoocurencyMatrix)
     allDescriptorsC4 = allDescriptors(C4CoocurencyMatrix)
     allDescriptorsC8 = allDescriptors(C8CoocurencyMatrix)
     allDescriptorsC16 = allDescriptors(C16CoocurencyMatrix)
 
+    # [0] -> Homogeneidade, [1] -> Entropia, [2] -> Energia, [3] -> Contraste
     HaralickDescriptorsArray = [
         [allDescriptorsC1[0], allDescriptorsC2[0], allDescriptorsC4[0], allDescriptorsC8[0], allDescriptorsC16[0]],
         [allDescriptorsC1[1], allDescriptorsC2[1], allDescriptorsC4[1], allDescriptorsC8[1], allDescriptorsC16[1]],
