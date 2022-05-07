@@ -6,6 +6,7 @@ from tkinter.ttk import Treeview
 import numpy
 from PIL import ImageTk
 import PIL.Image
+import time
 
 from tkinter import *
 from tkinter import filedialog as fd
@@ -111,16 +112,26 @@ class main:
             
     def exhibitImageDescriptors(self, imagePath):
         # Obtenção dos descritores de Haralick para a imagem selecionada
+        startTime = time.time()
         descriptors = calculateHaralickDescriptorsForAllImages(imagesPaths=imagePath)[0]
+        totalTime = "Tempo de execução: {:.2f} segundos\n".format(time.time() - startTime) 
 
         # Criação da janela auxiliar para a exibição da tabela de descritores
         descriptorsWindow = Toplevel(self.master)
         descriptorsWindow.title("Descritores de Haralick da imagem selecionada")
-        descriptorsWindow.geometry("630x150")
+        descriptorsWindow.geometry("630x180")
         
+        # Criação do frame de informações de execução
+        execution_frame = Frame(descriptorsWindow)
+        execution_frame.pack()
+
         # Criação do frame da tabela
         table_frame = Frame(descriptorsWindow)
         table_frame.pack()
+
+        # Label de informação do tempo de execução
+        time_label = Label(execution_frame, text=totalTime)
+        time_label.grid(row=0, column=0, padx=10)
 
         # Instanciação da tabela e definição das suas colunas
         descriptorsTable = Treeview(table_frame)
@@ -154,6 +165,7 @@ class main:
         values=('C16',descriptors[0][4],descriptors[1][4],descriptors[2][4], descriptors[3][4]))
 
         descriptorsTable.pack()
+
 
 
 
