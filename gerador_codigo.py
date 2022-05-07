@@ -59,7 +59,7 @@ def mostrar_codigo(r):
     print("\n            # Verificar co-ocorrência entre o pixel e todos os pontos do círculos")
     for ponto in pontos:
         print( f"            if (linha_pixel + {ponto[0]} < len(img)) and (coluna_pixel + {ponto[1]} < len(img[0])):")
-        print( f"                matriz[img[linha_pixel][coluna_pixel]][img[linha_pixel + {ponto[0]}][img[coluna_pixel+ {ponto[1]}]]] += 1")
+        print( f"                matriz[img[linha_pixel][coluna_pixel]][img[linha_pixel + {ponto[0]}][coluna_pixel+ {ponto[1]}]] += 1")
         print(  "                contador_pontos += 1")
     
     print("\n    # Calcular Probabilidade de cada co-ocorrência")
