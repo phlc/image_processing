@@ -3,6 +3,8 @@
 from array import array
 import os
 import numpy
+from PIL import ImageTk
+import PIL.Image
 
 from tkinter import *
 from tkinter import filedialog as fd
@@ -15,13 +17,15 @@ from descritores_haralick import calculateHaralickDescriptorsForAllImages
 class main:
     def __init__(self, master):
         self.master = master
+        self.imagePathOpened = ''
 
         # Configurações gerais
         self.corBackground = 'white'
 
         # Criação dos frames da interface
         self.frame_cabecalho = Frame(master, padx = 5, pady = 5)
-        self.canvas = Canvas(self.master, width=500, height=400, bg=self.corBackground)
+        self.canvas = Canvas(self.master, width=500, height=400)
+        
         self.drawWidgets()
 
 
@@ -38,9 +42,20 @@ class main:
 
         menuOpcoes = Menu(menu)
         menu.add_cascade(label='Opções', menu=menuOpcoes)
-        menuOpcoes.add_command(label='Selecionar imagens', command=self.selectImages) 
-        menuOpcoes.add_command(label='Selecionar diretorio', command=self.selectFilesDirectory) 
+         
+        
         menuOpcoes.add_command(label='Sair', command=self.master.destroy) 
+
+        menuDiretorio = Menu(menu)
+        menu.add_cascade(label='Diretórios', menu=menuDiretorio)
+        menuDiretorio.add_command(label='Selecionar diretorio para treino', command=self.selectFilesDirectory) 
+        menuDiretorio.add_command(label='Selecionar diretorio para teste', command=self.selectFilesDirectory) 
+
+        menuImagem = Menu(menu)
+        menu.add_cascade(label='Imagem', menu=menuImagem)
+        menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
+        if(len(self.imagePathOpened)):
+            menuImagem.add_command(label='Calcular descritores', command=lambda: calculateHaralickDescriptorsForAllImages(imagesPaths=self.imagePathOpened))
 
 
     def selectFilesDirectory(self): 
@@ -79,8 +94,14 @@ class main:
 
         # calcular os descritores para as imagens
         if(filenames):
-            self.calculateHaralickDescriptorsForAllImages(imagesPaths=filenames)
-
+            self.imagePathOpened = filenames
+            print(self.imagePathOpened[0])
+            # calculateHaralickDescriptorsForAllImages(imagesPaths=filenames)
+            image = ImageTk.PhotoImage(file = filenames[0])
+            image_width, image_height = image.width(), image.height()
+            openedImage = self.canvas.create_image((0,0), anchor=NW, image=image)
+            
+            openedImage.pack(side = "center", fill = "both", expand = "yes")
 
 if __name__ == '__main__':
     interface = Tk()
