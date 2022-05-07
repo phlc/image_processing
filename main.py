@@ -2,9 +2,11 @@
 # https://scikit-image.org/docs/0.19.x/
 from array import array
 import os
+from tkinter.ttk import Treeview
 import numpy
 from PIL import ImageTk
 import PIL.Image
+import time
 
 from tkinter import *
 from tkinter import filedialog as fd
@@ -24,8 +26,8 @@ class main:
 
         # Criação dos frames da interface
         self.frame_cabecalho = Frame(master, padx = 5, pady = 5)
-        self.canvas = Canvas(self.master, width=500, height=500)
-        
+        self.canvas = Canvas(self.master, width=500, height=500, background=self.corBackground)
+
         self.drawWidgets()
 
 
@@ -55,7 +57,11 @@ class main:
         menu.add_cascade(label='Imagem', menu=menuImagem)
         menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
         
-        
+        # Criação do frame e do botão para calcular os descritores da imagem selecionada
+        self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
+        self.frame_inferior.pack(side=BOTTOM)
+        self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: self.exhibitImageDescriptors(imagePath=self.imagePathOpened))
+        self.botao_calculo_descritores.grid(row=1, column=4, padx=10, pady=5)
 
 
     def selectFilesDirectory(self): 
@@ -93,12 +99,7 @@ class main:
             filetypes=filetypes)
 
         # Abrir a imagem no canvas
-        if(filenames):
-            self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
-            self.frame_inferior.pack(side=BOTTOM)
-            self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: calculateHaralickDescriptorsForAllImages(imagesPaths=self.imagePathOpened))
-            self.botao_calculo_descritores.grid(row=1, column=4, padx=10, pady=5)
-            
+        if(filenames):            
             self.imagePathOpened = filenames
             image = PIL.Image.open(filenames[0])
             # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
@@ -109,6 +110,62 @@ class main:
             openedImage.pack(side = "center", fill = "both", expand = "yes")
 
             
+    def exhibitImageDescriptors(self, imagePath):
+        # Obtenção dos descritores de Haralick para a imagem selecionada
+        startTime = time.time()
+        descriptors = calculateHaralickDescriptorsForAllImages(imagesPaths=imagePath)[0]
+        totalTime = "Tempo de execução: {:.2f} segundos\n".format(time.time() - startTime) 
+
+        # Criação da janela auxiliar para a exibição da tabela de descritores
+        descriptorsWindow = Toplevel(self.master)
+        descriptorsWindow.title("Descritores de Haralick da imagem selecionada")
+        descriptorsWindow.geometry("630x180")
+        
+        # Criação do frame de informações de execução
+        execution_frame = Frame(descriptorsWindow)
+        execution_frame.pack()
+
+        # Criação do frame da tabela
+        table_frame = Frame(descriptorsWindow)
+        table_frame.pack()
+
+        # Label de informação do tempo de execução
+        time_label = Label(execution_frame, text=totalTime)
+        time_label.grid(row=0, column=0, padx=10)
+
+        # Instanciação da tabela e definição das suas colunas
+        descriptorsTable = Treeview(table_frame)
+        descriptorsTable['columns'] = ('Matriz de Coocorrência','Homogeneidade', 'Entropia', 'Energia', 'Contraste')
+
+        descriptorsTable.column("#0", width=0,  stretch=NO)
+        descriptorsTable.column("Matriz de Coocorrência",anchor=CENTER, width=140)
+        descriptorsTable.column("Homogeneidade",anchor=CENTER,width=120)
+        descriptorsTable.column("Entropia",anchor=CENTER,width=120)
+        descriptorsTable.column("Energia",anchor=CENTER,width=120)
+        descriptorsTable.column("Contraste",anchor=CENTER,width=120)
+
+        # Criação do cabeçalho da tabela
+        descriptorsTable.heading("#0",text="",anchor=CENTER)
+        descriptorsTable.heading("Matriz de Coocorrência",text="Matriz de Coocorrência",anchor=CENTER)
+        descriptorsTable.heading("Homogeneidade",text="Homogeneidade",anchor=CENTER)
+        descriptorsTable.heading("Entropia",text="Entropia",anchor=CENTER)
+        descriptorsTable.heading("Energia",text="Energia",anchor=CENTER)
+        descriptorsTable.heading("Contraste",text="Contraste",anchor=CENTER)
+
+        # Populando a tabela com os dados dos descritores
+        descriptorsTable.insert(parent='',index='end',iid=0,text='',
+        values=('C1',descriptors[0][0],descriptors[1][0],descriptors[2][0], descriptors[3][0]))
+        descriptorsTable.insert(parent='',index='end',iid=1,text='',
+        values=('C2',descriptors[0][1],descriptors[1][1],descriptors[2][1], descriptors[3][1]))
+        descriptorsTable.insert(parent='',index='end',iid=2,text='',
+        values=('C4',descriptors[0][2],descriptors[1][2],descriptors[2][2], descriptors[3][2]))
+        descriptorsTable.insert(parent='',index='end',iid=3,text='',
+        values=('C8',descriptors[0][3],descriptors[1][3],descriptors[2][3], descriptors[3][3]))
+        descriptorsTable.insert(parent='',index='end',iid=4,text='',
+        values=('C16',descriptors[0][4],descriptors[1][4],descriptors[2][4], descriptors[3][4]))
+
+        descriptorsTable.pack()
+
 
 
 
