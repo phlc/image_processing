@@ -3,51 +3,22 @@ import numpy as np
 import matriz_circular
 from skimage import io
 
-
-# Calcula Entropia de Haralick
+# Calcula Entropia, Homogeneidade, Energia e Contraste de Haralick
 # @param matriz de co-ocorrência
-# @return entropia
-def entropia(matriz):
-    resultado = 0.0
+# @return [homogeneidade, entropia, energia, contraste]
+def allDescriptors(matriz):
+    entropia = 0.0
+    homogeneidade = 0.0
+    energia = 0.0
+    contraste = 0.0
     for linha in range(len(matriz)):
         for coluna in range(len(matriz[0])):
             if matriz[linha][coluna] > 0:
-                resultado += matriz[linha][coluna] * log(matriz[linha][coluna], 2)
-    return -resultado
-
-
-# Calcula Homogeneidade de Haralick
-# @param matriz de co-ocorrência
-# @return homogeneidade
-def homogeneidade(matriz):
-    resultado = 0.0
-    for linha in range(len(matriz)):
-        for coluna in range(len(matriz[0])):
-            resultado += matriz[linha][coluna] / (1 + abs(linha - coluna))
-    return resultado
-
-
-# Calcula Energia de Haralick
-# @param matriz de co-ocorrência
-# @return energia
-def energia(matriz):
-    resultado = 0.0
-    for linha in range(len(matriz)):
-        for coluna in range(len(matriz[0])):
-            resultado+= matriz[linha][coluna]**2
-    return resultado
-
-
-# Calcula Contraste de Haralick
-# @param matriz de co-ocorrência
-# @return contraste
-def contraste(matriz):
-    resultado = 0.0
-    for linha in range(len(matriz)):
-        for coluna in range(len(matriz[0])):
-            resultado+= (linha - coluna)**2 * matriz[linha][coluna]
-    return resultado
-
+                entropia -= matriz[linha][coluna] * log(matriz[linha][coluna], 2)
+            homogeneidade += matriz[linha][coluna] / (1 + abs(linha - coluna))
+            energia += matriz[linha][coluna] ** 2
+            contraste += (linha - coluna) ** 2 * matriz[linha][coluna]
+    return [homogeneidade, entropia, energia, contraste]
 
 # Chama a função que calcula os descritores para cada imagem
 # @param caminhos de todas as imagens
@@ -69,7 +40,6 @@ def calculateHaralickDescriptorsForAllImages(imagesPaths):
 def calculateHaralickDescriptors(image):
     # Reamostrar imagem para 32 tons de cinza
     image = np.array(np.rint(((image / 255) * 31)), dtype=int)
-
     # Parâmetros: imagem, numero de tons
     # Retorna Matriz de co-ocorrência de tons de cinza
     # Calcular descritores a partir das matrizes de coocorrência circulares C1, C2, C4, C8 e C16
@@ -81,42 +51,19 @@ def calculateHaralickDescriptors(image):
 
     # Parâmetros: Matriz de co-ocorrência
     # Cálculo de homogeneidade
-    HomogeneityC1  = homogeneidade(C1CoocurencyMatrix)
-    HomogeneityC2  = homogeneidade(C2CoocurencyMatrix)
-    HomogeneityC4  = homogeneidade(C4CoocurencyMatrix)
-    HomogeneityC8  = homogeneidade(C8CoocurencyMatrix)
-    HomogeneityC16 = homogeneidade(C16CoocurencyMatrix)
+    allDescriptorsC1 = allDescriptors(C1CoocurencyMatrix)
+    allDescriptorsC2 = allDescriptors(C2CoocurencyMatrix)
+    allDescriptorsC4 = allDescriptors(C4CoocurencyMatrix)
+    allDescriptorsC8 = allDescriptors(C8CoocurencyMatrix)
+    allDescriptorsC16 = allDescriptors(C16CoocurencyMatrix)
 
-    # Parâmetros: Matriz de co-ocorrência
-    # Cálculo de entropia
-    EntropyC1  = entropia(C1CoocurencyMatrix)
-    EntropyC2  = entropia(C2CoocurencyMatrix)
-    EntropyC4  = entropia(C4CoocurencyMatrix)
-    EntropyC8  = entropia(C8CoocurencyMatrix)
-    EntropyC16 = entropia(C16CoocurencyMatrix)
+    HaralickDescriptorsArray = [
+        [allDescriptorsC1[0], allDescriptorsC2[0], allDescriptorsC4[0], allDescriptorsC8[0], allDescriptorsC16[0]],
+        [allDescriptorsC1[1], allDescriptorsC2[1], allDescriptorsC4[1], allDescriptorsC8[1], allDescriptorsC16[1]],
+        [allDescriptorsC1[2], allDescriptorsC2[2], allDescriptorsC4[2], allDescriptorsC8[2], allDescriptorsC16[2]],
+        [allDescriptorsC1[3], allDescriptorsC2[3], allDescriptorsC4[3], allDescriptorsC8[3], allDescriptorsC16[3]]]
 
-    # Parâmetros: Matriz de co-ocorrência
-    # Cálculo de energia
-    EnergyC1  = energia(C1CoocurencyMatrix)
-    EnergyC2  = energia(C2CoocurencyMatrix)
-    EnergyC4  = energia(C4CoocurencyMatrix)
-    EnergyC8  = energia(C8CoocurencyMatrix)
-    EnergyC16 = energia(C16CoocurencyMatrix)
-
-    # Parâmetros: Matriz de co-ocorrência
-    # Cálculo de contraste
-    ContrastC1  = contraste(C1CoocurencyMatrix)
-    ContrastC2  = contraste(C2CoocurencyMatrix)
-    ContrastC4  = contraste(C4CoocurencyMatrix)
-    ContrastC8  = contraste(C8CoocurencyMatrix)
-    ContrastC16 = contraste(C16CoocurencyMatrix)
-
-
-    HaralickDescriptorsArray = [[HomogeneityC1, HomogeneityC2, HomogeneityC4, HomogeneityC8, HomogeneityC16], 
-                                [EntropyC1, EntropyC2, EntropyC4, EntropyC8, EntropyC16],
-                                [EnergyC1, EnergyC2, EnergyC4, EnergyC8, EnergyC16],
-                                [ContrastC1, ContrastC2, ContrastC4, ContrastC8, ContrastC16]]
-    
     print(HaralickDescriptorsArray)
     return HaralickDescriptorsArray
+
     
