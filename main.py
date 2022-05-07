@@ -3,6 +3,8 @@
 from array import array
 import os
 import numpy
+from PIL import ImageTk
+import PIL.Image
 
 from tkinter import *
 from tkinter import filedialog as fd
@@ -15,13 +17,15 @@ from descritores_haralick import calculateHaralickDescriptorsForAllImages
 class main:
     def __init__(self, master):
         self.master = master
+        self.imagePathOpened = ''
 
         # Configurações gerais
         self.corBackground = 'white'
 
         # Criação dos frames da interface
         self.frame_cabecalho = Frame(master, padx = 5, pady = 5)
-        self.canvas = Canvas(self.master, width=500, height=400, bg=self.corBackground)
+        self.canvas = Canvas(self.master, width=500, height=500)
+        
         self.drawWidgets()
 
 
@@ -38,9 +42,20 @@ class main:
 
         menuOpcoes = Menu(menu)
         menu.add_cascade(label='Opções', menu=menuOpcoes)
-        menuOpcoes.add_command(label='Selecionar imagens', command=self.selectImages) 
-        menuOpcoes.add_command(label='Selecionar diretorio', command=self.selectFilesDirectory) 
+         
+        
         menuOpcoes.add_command(label='Sair', command=self.master.destroy) 
+
+        menuDiretorio = Menu(menu)
+        menu.add_cascade(label='Diretórios', menu=menuDiretorio)
+        menuDiretorio.add_command(label='Selecionar diretorio para treino', command=self.selectFilesDirectory) 
+        menuDiretorio.add_command(label='Selecionar diretorio para teste', command=self.selectFilesDirectory) 
+
+        menuImagem = Menu(menu)
+        menu.add_cascade(label='Imagem', menu=menuImagem)
+        menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
+        
+        
 
 
     def selectFilesDirectory(self): 
@@ -77,9 +92,24 @@ class main:
             initialdir='/',
             filetypes=filetypes)
 
-        # calcular os descritores para as imagens
+        # Abrir a imagem no canvas
         if(filenames):
-            calculateHaralickDescriptorsForAllImages(imagesPaths=filenames)
+            self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
+            self.frame_inferior.pack(side=BOTTOM)
+            self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: calculateHaralickDescriptorsForAllImages(imagesPaths=self.imagePathOpened))
+            self.botao_calculo_descritores.grid(row=1, column=4, padx=10, pady=5)
+            
+            self.imagePathOpened = filenames
+            image = PIL.Image.open(filenames[0])
+            # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
+            resized_image= image.resize((500,500))
+            tkImage = ImageTk.PhotoImage(resized_image)
+            # criar imagem no canvas e realizar o seu bind (ancoragem)
+            openedImage = self.canvas.create_image((0,0), anchor=NW, image=tkImage)
+            openedImage.pack(side = "center", fill = "both", expand = "yes")
+
+            
+
 
 
 if __name__ == '__main__':
