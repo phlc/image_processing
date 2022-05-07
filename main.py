@@ -24,8 +24,8 @@ class main:
 
         # Criação dos frames da interface
         self.frame_cabecalho = Frame(master, padx = 5, pady = 5)
-        self.canvas = Canvas(self.master, width=500, height=500)
-        
+        self.canvas = Canvas(self.master, width=500, height=500, background=self.corBackground)
+
         self.drawWidgets()
 
 
@@ -55,7 +55,11 @@ class main:
         menu.add_cascade(label='Imagem', menu=menuImagem)
         menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
         
-        
+        # Criação do frame e do botão para calcular os descritores da imagem selecionada
+        self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
+        self.frame_inferior.pack(side=BOTTOM)
+        self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: self.exhibitImageDescriptors(imagePath=self.imagePathOpened))
+        self.botao_calculo_descritores.grid(row=1, column=4, padx=10, pady=5)
 
 
     def selectFilesDirectory(self): 
@@ -93,12 +97,7 @@ class main:
             filetypes=filetypes)
 
         # Abrir a imagem no canvas
-        if(filenames):
-            self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
-            self.frame_inferior.pack(side=BOTTOM)
-            self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: calculateHaralickDescriptorsForAllImages(imagesPaths=self.imagePathOpened))
-            self.botao_calculo_descritores.grid(row=1, column=4, padx=10, pady=5)
-            
+        if(filenames):            
             self.imagePathOpened = filenames
             image = PIL.Image.open(filenames[0])
             # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
@@ -109,7 +108,14 @@ class main:
             openedImage.pack(side = "center", fill = "both", expand = "yes")
 
             
+    def exhibitImageDescriptors(self, imagePath):
+        descriptors = calculateHaralickDescriptorsForAllImages(imagesPaths=imagePath)[0]
+        displayMessage = 'Homogeneidade: ', descriptors[0], '\n Entropia: ', descriptors[1], '\n Energia: ', descriptors[2], '\n Contraste: ', descriptors[3]
 
+        descriptorsWindow = Toplevel(self.master)
+        descriptorsWindow.title("Descritores de Haralick da imagem selecionada")
+        descriptorsWindow.geometry("700x70")
+        Label(descriptorsWindow, text=displayMessage).pack()
 
 
 if __name__ == '__main__':
