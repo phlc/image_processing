@@ -24,7 +24,7 @@ class main:
 
         # Criação dos frames da interface
         self.frame_cabecalho = Frame(master, padx = 5, pady = 5)
-        self.canvas = Canvas(self.master, width=500, height=400)
+        self.canvas = Canvas(self.master, width=500, height=500)
         
         self.drawWidgets()
 
@@ -54,8 +54,8 @@ class main:
         menuImagem = Menu(menu)
         menu.add_cascade(label='Imagem', menu=menuImagem)
         menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
-        if(len(self.imagePathOpened)):
-            menuImagem.add_command(label='Calcular descritores', command=lambda: calculateHaralickDescriptorsForAllImages(imagesPaths=self.imagePathOpened))
+        
+        
 
 
     def selectFilesDirectory(self): 
@@ -92,16 +92,25 @@ class main:
             initialdir='/',
             filetypes=filetypes)
 
-        # calcular os descritores para as imagens
+        # Abrir a imagem no canvas
         if(filenames):
-            self.imagePathOpened = filenames
-            print(self.imagePathOpened[0])
-            # calculateHaralickDescriptorsForAllImages(imagesPaths=filenames)
-            image = ImageTk.PhotoImage(file = filenames[0])
-            image_width, image_height = image.width(), image.height()
-            openedImage = self.canvas.create_image((0,0), anchor=NW, image=image)
+            self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
+            self.frame_inferior.pack(side=BOTTOM)
+            self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: calculateHaralickDescriptorsForAllImages(imagesPaths=self.imagePathOpened))
+            self.botao_calculo_descritores.grid(row=1, column=4, padx=10, pady=5)
             
+            self.imagePathOpened = filenames
+            image = PIL.Image.open(filenames[0])
+            # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
+            resized_image= image.resize((500,500))
+            tkImage = ImageTk.PhotoImage(resized_image)
+            # criar imagem no canvas e realizar o seu bind (ancoragem)
+            openedImage = self.canvas.create_image((0,0), anchor=NW, image=tkImage)
             openedImage.pack(side = "center", fill = "both", expand = "yes")
+
+            
+
+
 
 if __name__ == '__main__':
     interface = Tk()
