@@ -64,7 +64,6 @@ def calculateHaralickDescriptors(image):
         [allDescriptorsC1[2], allDescriptorsC2[2], allDescriptorsC4[2], allDescriptorsC8[2], allDescriptorsC16[2]],
         [allDescriptorsC1[3], allDescriptorsC2[3], allDescriptorsC4[3], allDescriptorsC8[3], allDescriptorsC16[3]]]
 
-    print(HaralickDescriptorsArray)
     return HaralickDescriptorsArray
 
     
