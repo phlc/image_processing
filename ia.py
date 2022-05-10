@@ -1,4 +1,6 @@
-from cgi import test
+from pickletools import optimize
+from re import T
+import tensorflow as tf
 from matplotlib.pyplot import table
 import numpy as np
 import pickle
@@ -46,5 +48,20 @@ test_data = np.array(test_data, dtype=object)
 random.shuffle(training_data)
 random.shuffle(test_data)
 
-for sample in training_data:
-    print(sample[0])
+train_X = []
+train_y = []
+
+for descritor, classe in training_data:
+    train_X.append(descritor)
+    train_y.append(classe)
+
+train_X = np.array(train_X)
+train_y = np.array(train_y)
+
+
+model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.Dense(12, activation=tf.nn.relu))
+model.add(tf.keras.layers.Dense(4, activation=tf.nn.softmax))
+
+model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=['accuracy'])
+model.fit(x=train_X, y=train_y, epochs=500)
