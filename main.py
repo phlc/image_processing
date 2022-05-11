@@ -3,7 +3,7 @@
 from array import array
 import os
 from tkinter.ttk import Treeview
-import numpy
+import numpy as np
 from PIL import ImageTk
 import PIL.Image
 import time
@@ -12,14 +12,17 @@ from tkinter import *
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
+from skimage import io
+
 from descritores_haralick import calculateHaralickDescriptorsForAllImages
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class main:
     def __init__(self, master):
         self.master = master
         self.imagePathOpened = ''
+        self.shadesNumber = 32
 
         # Configurações gerais
         self.corBackground = 'white'
@@ -56,6 +59,7 @@ class main:
         menuImagem = Menu(menu)
         menu.add_cascade(label='Imagem', menu=menuImagem)
         menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
+        menuImagem.add_command(label='Reamostrar imagem', command=self.showResampledImage)
         
         # Criação do frame e do botão para calcular os descritores da imagem selecionada
         self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
@@ -111,6 +115,7 @@ class main:
 
             
     def exhibitImageDescriptors(self, imagePath):
+        print(imagePath)
         # Obtenção dos descritores de Haralick para a imagem selecionada
         startTime = time.time()
         descriptors = calculateHaralickDescriptorsForAllImages(imagesPaths=imagePath)[0]
@@ -165,8 +170,28 @@ class main:
         values=('C16',descriptors[0][4],descriptors[1][4],descriptors[2][4], descriptors[3][4]))
 
         descriptorsTable.pack()
+        
 
-
+    def showResampledImage(self):
+        image = io.imread(self.imagePathOpened[0])
+        imageArr = np.array(image)
+        maiorTom = imageArr.max()
+        print(maiorTom)
+        # Reamostrar imagem para 32 tons de cinza
+        print(image[0])
+        greyscaleArray = np.array(np.rint(((image / maiorTom) * 31)), dtype=int)
+        print(greyscaleArray[0])
+        resampledImage = PIL.Image.fromarray(obj=greyscaleArray, mode='L')
+        # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
+        resized_image= resampledImage.resize((500,500))
+        tkImage = ImageTk.PhotoImage(resized_image)
+        # criar imagem no canvas e realizar o seu bind (ancoragem)
+        openedImage = self.canvas.create_image((0,0), anchor=NW, image=tkImage)
+        openedImage.pack(side = "center", fill = "both", expand = "yes")
+        # imageArr = np.array(image)
+        # plt.imshow(imageArr, cmap='gray', vmin=)
+        # plt.show()
+        # greyscaleArray = np.array(np.rint(((image / 256) * 31)), dtype=int)
 
 
 if __name__ == '__main__':
