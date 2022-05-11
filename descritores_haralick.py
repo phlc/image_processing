@@ -38,7 +38,9 @@ def calculateHaralickDescriptorsForAllImages(imagesPaths):
 # @return array de descritores da imagem
 def calculateHaralickDescriptors(image):
     # Reamostrar imagem para 32 tons de cinza
-    image = np.array(np.rint(((image / 255) * 31)), dtype=int)
+    for i in range(len(image)):
+        for j in range(len(image[0])):
+            image[i][j] = int(image[i][j]/255 * 31)    
     # Parâmetros: imagem, numero de tons
     # Retorna Matriz de co-ocorrência de tons de cinza
     # Calcular descritores a partir das matrizes de coocorrência circulares C1, C2, C4, C8 e C16
