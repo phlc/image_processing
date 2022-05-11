@@ -65,3 +65,16 @@ model.add(tf.keras.layers.Dense(4, activation=tf.nn.softmax))
 
 model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=['accuracy'])
 model.fit(x=train_X, y=train_y, epochs=500)
+
+# Salvar rede neural
+# rede_file = open('rede_neural.pkl',  'wb')
+# pickle.dump(model, rede_file)
+# rede_file.close()
+
+# Carregar rede neural
+# rede_file = open('rede_neural.pkl',  'rb')
+# model = pickle.load(rede_file)
+
+# Matriz de confusão
+# y_pred = model.predict(train_X)
+# confusion_matrix = sklearn.metrics.confusion_matrix(train_y, np.rint(y_pred))

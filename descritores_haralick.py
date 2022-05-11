@@ -17,8 +17,7 @@ def allDescriptors(matriz):
                 entropia -= matriz[linha][coluna] * log(matriz[linha][coluna], 2)
             homogeneidade += matriz[linha][coluna] / (1 + abs(linha - coluna))
             energia += matriz[linha][coluna] ** 2
-            contraste += (linha - coluna) ** 2 * matriz[linha][coluna]
-    return [homogeneidade, entropia, energia, contraste]
+    return [homogeneidade, entropia, energia]
 
 # Chama a função que calcula os descritores para cada imagem
 # @param caminhos de todas as imagens
@@ -61,8 +60,7 @@ def calculateHaralickDescriptors(image):
     HaralickDescriptorsArray = [
         [allDescriptorsC1[0], allDescriptorsC2[0], allDescriptorsC4[0], allDescriptorsC8[0], allDescriptorsC16[0]],
         [allDescriptorsC1[1], allDescriptorsC2[1], allDescriptorsC4[1], allDescriptorsC8[1], allDescriptorsC16[1]],
-        [allDescriptorsC1[2], allDescriptorsC2[2], allDescriptorsC4[2], allDescriptorsC8[2], allDescriptorsC16[2]],
-        [allDescriptorsC1[3], allDescriptorsC2[3], allDescriptorsC4[3], allDescriptorsC8[3], allDescriptorsC16[3]]]
+        [allDescriptorsC1[2], allDescriptorsC2[2], allDescriptorsC4[2], allDescriptorsC8[2], allDescriptorsC16[2]]]
 
     return HaralickDescriptorsArray
 
