@@ -3,7 +3,7 @@ import descritores_haralick as dh
 import pickle
 import numpy as np
 
-# Calcular set de matrizes de todas imagens / diretorio default
+# Calcular set de matrizes de todas imagens / diretorio default / número de tons default (argumento -> numero_tons)
 # set_matrizes_todas_imagens = gm.calcula_matrizes_varias_imagens(gravar_arquivo="True")
 
 # Carregar set_matrizes_todas_imagens  do arquivo dataset_matrizes.pkl
@@ -11,7 +11,7 @@ input = open('dataset_matrizes.pkl', 'rb')
 set_matrizes_todas_imagens = np.array(pickle.load(input))
 input.close()
 
-# Calcular set de matrizes de uma imagem
+# Calcular set de matrizes de uma imagem / número de tons default (argumento -> numero_tons)
 set_matrizes_uma_imagem = gm.calcula_matrizes_uma_imagem(path="./imagens/1/p_d_left_cc(12).png")
 
 # Calcular descritores para todas matrizes de todas imagens
