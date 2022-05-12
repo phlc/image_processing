@@ -1,69 +1,74 @@
 from math import log
 import numpy as np
 import matriz_circular
-from skimage import io
 
 # Calcula Entropia, Homogeneidade, Energia e Contraste de Haralick
-# @param matriz de co-ocorrência
+# @param matriz de co-ocorrência; Opções: homogeneidade, entropia, energia, contraste
 # @return [homogeneidade, entropia, energia, contraste]
-def allDescriptors(matriz):
-    entropia = 0.0
-    homogeneidade = 0.0
-    energia = 0.0
-    contraste = 0.0
+def descritores(matriz, entropia=True, homogeneidade=True, energia=True, contraste=False ):
+    # Inicializações
+    descritores = []
+    valor_entropia = 0.0
+    valor_homogeneidade = 0.0
+    valor_energia = 0.0
+    valor_contraste = 0.0
+
+    # Passar por cada pixel da imagem
     for linha in range(len(matriz)):
         for coluna in range(len(matriz[0])):
+
+            # Calcular Entropia
             if matriz[linha][coluna] > 0:
-                entropia -= matriz[linha][coluna] * log(matriz[linha][coluna], 2)
-            homogeneidade += matriz[linha][coluna] / (1 + abs(linha - coluna))
-            energia += matriz[linha][coluna] ** 2
-    return [homogeneidade, entropia, energia]
+                valor_entropia -= matriz[linha][coluna] * log(matriz[linha][coluna], 2)
 
-# Chama a função que calcula os descritores para cada imagem
-# @param caminhos de todas as imagens
-# @return array de descritores de todas as imagens
-def calculateHaralickDescriptorsForAllImages(imagesPaths):
-    AllImagesHaralickDescriptors = []
+            # Calcular Homogeneidade
+            valor_homogeneidade += matriz[linha][coluna] / (1 + abs(linha - coluna))
 
-    for imagePath in imagesPaths:
-        image = io.imread(imagePath)
+            # Calcular Energia
+            valor_energia += matriz[linha][coluna] ** 2
 
-        AllImagesHaralickDescriptors.append(calculateHaralickDescriptors(image=image))
-
-    return AllImagesHaralickDescriptors
-
-
-# Função que calcula os descritores para cada imagem
-# @param caminhos da imagem
-# @return array de descritores da imagem
-def calculateHaralickDescriptors(image):
-    # Reamostrar imagem para 32 tons de cinza
-    for i in range(len(image)):
-        for j in range(len(image[0])):
-            image[i][j] = int(image[i][j]/255 * 31)    
-    # Parâmetros: imagem, numero de tons
-    # Retorna Matriz de co-ocorrência de tons de cinza
-    # Calcular descritores a partir das matrizes de coocorrência circulares C1, C2, C4, C8 e C16
-    C1CoocurencyMatrix = matriz_circular.c1(np.array(image), 32)
-    C2CoocurencyMatrix = matriz_circular.c2(np.array(image), 32)
-    C4CoocurencyMatrix = matriz_circular.c4(np.array(image), 32)
-    C8CoocurencyMatrix = matriz_circular.c8(np.array(image), 32)
-    C16CoocurencyMatrix = matriz_circular.c16(np.array(image), 32)
-
-    # Parâmetros: Matriz de co-ocorrência
-    # Cálculo de todos os descritores de Haralick utilizados (Homogeneidade, entropia, energia e contraste)
-    allDescriptorsC1 = allDescriptors(C1CoocurencyMatrix)
-    allDescriptorsC2 = allDescriptors(C2CoocurencyMatrix)
-    allDescriptorsC4 = allDescriptors(C4CoocurencyMatrix)
-    allDescriptorsC8 = allDescriptors(C8CoocurencyMatrix)
-    allDescriptorsC16 = allDescriptors(C16CoocurencyMatrix)
-
-    # [0] -> Homogeneidade, [1] -> Entropia, [2] -> Energia, [3] -> Contraste
-    HaralickDescriptorsArray = [
-        [allDescriptorsC1[0], allDescriptorsC2[0], allDescriptorsC4[0], allDescriptorsC8[0], allDescriptorsC16[0]],
-        [allDescriptorsC1[1], allDescriptorsC2[1], allDescriptorsC4[1], allDescriptorsC8[1], allDescriptorsC16[1]],
-        [allDescriptorsC1[2], allDescriptorsC2[2], allDescriptorsC4[2], allDescriptorsC8[2], allDescriptorsC16[2]]]
-
-    return HaralickDescriptorsArray
-
+            # Calcular Contraste
+            valor_contraste += (linha - coluna) ** 2 * matriz[linha][coluna]
     
+    # Criar lista de descritores de acordo com opções
+    if(entropia):
+        descritores.append(valor_entropia)
+    if(homogeneidade):
+        descritores.append(valor_homogeneidade)
+    if(energia):
+        descritores.append(valor_energia)
+    if(contraste):
+        descritores.append(valor_contraste)
+
+    return descritores
+
+# Calcula os descritores de Haralick para um conjunto de matrizes de várias imagens
+# @param lista 3D de [imagem][matrizes][matriz]
+# @return array de descritores de todas as imagens
+def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidade=True, energia=True, contraste=False):
+    # Lista de lista de descritores para cada matriz
+    set_descritores = []
+
+    # Passa por cada matriz do conjunto de matrizes de cada imagem
+    for matrizes in set_matrizes:
+        descritores_imagem = []
+        for matriz in matrizes:
+                descritores_imagem.append(descritores(matriz, entropia, homogeneidade, energia, contraste))
+    
+        set_descritores.append(descritores_imagem)
+
+    return set_descritores
+
+
+# Calcula os descritores de Haralick para um conjunto de matrizes uma imagem
+# @param lista 2d de [matrizes][matriz] 
+# @return array de descritores da imagem
+def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, energia=True, contraste=False):
+    # Lista de descritores para cada matriz
+    descritores_imagem = []
+
+    # Passa por cada matriz das matrizes de uma imagem
+    for matriz in matrizes:
+            descritores_imagem.append(descritores(matriz, entropia, homogeneidade, energia, contraste))
+
+    return descritores_imagem
