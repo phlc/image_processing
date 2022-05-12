@@ -1,16 +1,15 @@
+import tensorflow as tf
 from matplotlib.pyplot import table
 import numpy as np
 import pickle
 import random
-from sklearn import svm
 from sklearn import metrics
 
-
-# Treina e testa uma SVM a partir de um conjunto de descritores de todas imagens
+# Treina e testa uma Rede Neural a partir de um conjunto de descritores de todas imagens
 # @param conjunto de descritores de todas imagens, número de descritores, opção gravar SVM em arquivo
-# @return [SVM, metricas do teste]
-def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=False):
-
+# @return [Rede Neural, metricas do teste]
+def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_rede=False):
+    
     # Descritores separados por Birad
     birad1 = []
     birad2 = []
@@ -82,32 +81,34 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=Fals
     test_X = np.array(test_X)
     test_y = np.array(test_y)
 
+    # Criar Rede Neural
+    modelo_rede = tf.keras.models.Sequential()
+    modelo_rede.add(tf.keras.layers.Dense(42, activation=tf.nn.relu)) #adiciona camada oculta
+    modelo_rede.add(tf.keras.layers.Dense(4, activation=tf.nn.softmax)) #adiciona camada de saída
+    modelo_rede.compile(optimizer="adam", loss="categorical_crossentropy", metrics=['accuracy'])#compilar rede
+    
+    # Treinar Rede Neural
+    modelo_rede.fit(x=train_X, y=train_y, epochs=500)
 
-    # Criar SVM
-    modelo_svm = svm.SVC(gamma=0.1, C=100)
-
-    # Treinar SVM
-    modelo_svm.fit(train_X, train_y)
-
-    # Testar SVM
-    predictions = modelo_svm.predict(test_X)
+    # Testar Rede Neural
+    predictions = modelo_rede.predict(test_X)
     metricas = [metrics.confusion_matrix(test_y, predictions), metrics.accuracy_score(test_y, predictions)]
 
     # Gravar modelo
-    if (gravar_svm):
-        output_svm = open('svm.pkl', 'wb')
-        pickle.dump(modelo_svm, output_svm)
+    if (gravar_rede):
+        output_rede = open('rede.pkl', 'wb')
+        pickle.dump(modelo_rede, output_rede)
 
-        output_metricas = open('metricas_svm', 'wb')
+        output_metricas = open('metricas_rede', 'wb')
         pickle.dump(metricas, output_metricas)
 
 
-    return(modelo_svm, metricas)
+    return(modelo_rede, metricas)
 
-# Testa uma imagem em uma SVM
-# @param modelo da svm, descritores da imagem, número de descritores
+# Testa uma imagem em uma Rede Neural
+# @param modelo da rede neural, descritores da imagem, número de descritores
 # @return classificação
-def classificar_svm(modelo_svm, descritores, numero_descritores=3):
+def classificar_svm(modelo_rede, descritores, numero_descritores=3):
     instancia = np.reshape(descritores, numero_descritores*5)
     instancia = instancia.reshape(1, -1)
-    return modelo_svm.predict(instancia)
+    return modelo_rede.predict(instancia)

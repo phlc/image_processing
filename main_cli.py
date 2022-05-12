@@ -30,5 +30,7 @@ descritores_uma_imagem = dh.calcula_descritores_uma_imagem(set_matrizes_uma_imag
 # Classificar uma imagem (a partir de seus descritores)
 classe = ia_svm.classificar_svm(modelo_svm, descritores_uma_imagem)
 
-print(metricas)
-print(classe)
+# Treinar uma Rede Neura (argumento numero_descritores Default)
+(modelo_svm, metricas) = ia_svm.treinar_svm(descritores_todas_imagens=descritores_todas_imagens, gravar_svm=True)
+
+
