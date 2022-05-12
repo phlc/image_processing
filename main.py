@@ -51,11 +51,17 @@ class main:
         
         menuOpcoes.add_command(label='Sair', command=self.master.destroy) 
 
-        menuDiretorio = Menu(menu)
-        menu.add_cascade(label='Rede Neural', menu=menuDiretorio)
-        menuDiretorio.add_command(label='Treinar', command=self.selectFilesDirectory) 
-        menuDiretorio.add_command(label='Testar', command=self.selectFilesDirectory) 
-        menuDiretorio.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
+        menuRede = Menu(menu)
+        menu.add_cascade(label='Rede Neural', menu=menuRede)
+        menuRede.add_command(label='Treinar', command=self.selectFilesDirectory) 
+        menuRede.add_command(label='Testar', command=self.selectFilesDirectory) 
+        menuRede.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
+
+        menuSVM = Menu(menu)
+        menu.add_cascade(label='SVM', menu=menuRede)
+        menuSVM.add_command(label='Treinar', command=self.selectFilesDirectory) 
+        menuSVM.add_command(label='Testar', command=self.selectFilesDirectory) 
+        menuSVM.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
 
         menuImagem = Menu(menu)
         menu.add_cascade(label='Imagem', menu=menuImagem)
