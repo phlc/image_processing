@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 import random
 from sklearn import svm
+from sklearn import metrics
 
 input = open('dataset.pkl', 'rb')
 dataset = np.array(pickle.load(input))
@@ -66,17 +67,10 @@ for descritor, classe in test_data:
 test_X = np.array(test_X)
 test_y = np.array(test_y)
 
-clf = svm.SVC(gamma=0.01, C=100)
+clf = svm.SVC(gamma=0.1, C=100)
 clf.fit(train_X, train_y)
 
 
-errados = 0
-certos = 0
-for i in range(len(test_X)):
-    prediction = clf.predict(test_X[i].reshape(1, -1))
-    print (prediction, test_y[i])
-    if(prediction == test_y[i]):
-        certos+=1
-    else:
-        errados+=1
-print (certos, errados)
+predictions = clf.predict(test_X)
+print(metrics.accuracy_score(test_y, predictions))
+print(metrics.confusion_matrix(test_y, predictions))

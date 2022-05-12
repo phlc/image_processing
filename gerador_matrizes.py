@@ -8,7 +8,7 @@ import matriz_circular as mc
 # Calcula todas as matrizes de co-ocorrência de todas as imagens de um diretório com 4 pastas de birads
 # @param path do diretório, opção de salvar em arquivo
 # @return lista de listas de birads cada um com a lista das matrizes de cada imagem no diretório
-def calcula_matrizes_varias_imagens(gravar_arquivo, diretorio):
+def calcula_matrizes_varias_imagens(diretorio="./imagens", gravar_arquivo=False):
     # Declarações
     BIRADS = ["1", "2", "3", "4"]
     dataset = [[], [], [], []] #uma lista de matrizes para cada imagem em cada birad
@@ -21,6 +21,11 @@ def calcula_matrizes_varias_imagens(gravar_arquivo, diretorio):
 
         # Passar por cada imagem na pasta da Birad
         for image_name in os.listdir(path):
+
+            # Testar tipo do arquivo
+            if(not(image_name.endswith(".png") or image_name.endswith(".jpg" ))):
+                continue
+
             #Abrir Imagem
             image = cv2.imread(os.path.join(path,image_name), 0)
 
@@ -53,6 +58,10 @@ def calcula_matrizes_varias_imagens(gravar_arquivo, diretorio):
 # @return lista das matrizes da imagem 
 def calcula_matrizes_uma_imagem(path):
     
+    # Testar tipo do arquivo
+    if(not(path.endswith(".png") or path.endswith(".jpg" ))):
+        return None
+
     # Abrir Imagem
     image = cv2.imread(path, 0)
 
