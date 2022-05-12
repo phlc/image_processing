@@ -22,7 +22,7 @@ class main:
     def __init__(self, master):
         self.master = master
         self.imagePathOpened = ''
-        self.shadesNumber = 32
+        self.grayScale = 32
 
         # Configurações gerais
         self.corBackground = 'white'
@@ -52,9 +52,10 @@ class main:
         menuOpcoes.add_command(label='Sair', command=self.master.destroy) 
 
         menuDiretorio = Menu(menu)
-        menu.add_cascade(label='Diretórios', menu=menuDiretorio)
-        menuDiretorio.add_command(label='Selecionar diretorio para treino', command=self.selectFilesDirectory) 
-        menuDiretorio.add_command(label='Selecionar diretorio para teste', command=self.selectFilesDirectory) 
+        menu.add_cascade(label='Rede Neural', menu=menuDiretorio)
+        menuDiretorio.add_command(label='Treinar', command=self.selectFilesDirectory) 
+        menuDiretorio.add_command(label='Testar', command=self.selectFilesDirectory) 
+        menuDiretorio.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
 
         menuImagem = Menu(menu)
         menu.add_cascade(label='Imagem', menu=menuImagem)
@@ -71,22 +72,25 @@ class main:
     def selectFilesDirectory(self): 
         # selecionar um diretorio de imagens
         filedirectory = fd.askdirectory()
+        print(filedirectory)
         if(filedirectory):
-            # obter os subdiretórios do diretório selecionado
-            subdirectories = os.listdir(filedirectory)
-            descriptorsMatrix = []
-            if(subdirectories):
-                for index, subdirectory in enumerate(subdirectories):
-                    descriptorsMatrix.append(subdirectory)
-                    descriptorsMatrix[index] = []
-                    imagesPathsList = os.listdir(filedirectory + '/' + subdirectory)
-                    # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
-                    filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
-                    formatedFilteredPaths = list(map(lambda path: filedirectory + '/' + subdirectory + '/' + path, filteredPaths))
+            #chama função do Pedro
 
-                    # obter os descritores para as imagens por diretório
-                    if(formatedFilteredPaths):  
-                        descriptorsMatrix[index].append(calculateHaralickDescriptorsForAllImages(formatedFilteredPaths))
+            # # obter os subdiretórios do diretório selecionado
+            # subdirectories = os.listdir(filedirectory)
+            # descriptorsMatrix = []
+            # if(subdirectories):
+            #     for index, subdirectory in enumerate(subdirectories):
+            #         descriptorsMatrix.append(subdirectory)
+            #         descriptorsMatrix[index] = []
+            #         imagesPathsList = os.listdir(filedirectory + '/' + subdirectory)
+            #         # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
+            #         filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
+            #         formatedFilteredPaths = list(map(lambda path: filedirectory + '/' + subdirectory + '/' + path, filteredPaths))
+
+            #         # obter os descritores para as imagens por diretório
+            #         if(formatedFilteredPaths):  
+            #             descriptorsMatrix[index].append(calculateHaralickDescriptorsForAllImages(formatedFilteredPaths))
 
 
     def selectImages(self):
@@ -174,23 +178,26 @@ class main:
 
     def showResampledImage(self):
         image = io.imread(self.imagePathOpened[0])
-        imageArr = np.array(image)
-        maiorTom = imageArr.max()
-        print(maiorTom)
+        image = np.array(image)
+        maiorTom = image.max()
+        # print(maiorTom)
         # Reamostrar imagem para 32 tons de cinza
-        print(image[0])
-        greyscaleArray = np.array(np.rint(((image / maiorTom) * 31)), dtype=int)
-        print(greyscaleArray[0])
-        resampledImage = PIL.Image.fromarray(obj=greyscaleArray, mode='L')
-        # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
-        resized_image= resampledImage.resize((500,500))
-        tkImage = ImageTk.PhotoImage(resized_image)
-        # criar imagem no canvas e realizar o seu bind (ancoragem)
-        openedImage = self.canvas.create_image((0,0), anchor=NW, image=tkImage)
-        openedImage.pack(side = "center", fill = "both", expand = "yes")
+        for i in range(len(image)):
+            for j in range(len(image)):
+                image[i][j] = int(image[i][j]/maiorTom * 31)
+
+        # print(image[0])
+        # resampledImage = PIL.Image.fromarray(obj=image, mode='L')
+        # # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
+        # resized_image= resampledImage.resize((500,500))
+        # tkImage = ImageTk.PhotoImage(resized_image)
+        # # criar imagem no canvas e realizar o seu bind (ancoragem)
+        # openedImage = self.canvas.create_image((0,0), anchor=NW, image=tkImage)
+        # openedImage.pack(side = "center", fill = "both", expand = "yes")
         # imageArr = np.array(image)
-        # plt.imshow(imageArr, cmap='gray', vmin=)
-        # plt.show()
+        imageShow = plt.imshow(image, cmap='gray', vmax=31)
+        plt.colorbar(imageShow)
+        plt.show()
         # greyscaleArray = np.array(np.rint(((image / 256) * 31)), dtype=int)
 
 
