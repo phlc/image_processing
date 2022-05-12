@@ -5,7 +5,7 @@ import matriz_circular
 # Calcula Entropia, Homogeneidade, Energia e Contraste de Haralick
 # @param matriz de co-ocorrência; Opções: homogeneidade, entropia, energia, contraste
 # @return [homogeneidade, entropia, energia, contraste]
-def descritores(matriz, entropia=True, homogeneidade=True, energia=True, contraste=True ):
+def __descritores(matriz, entropia=True, homogeneidade=True, energia=True, contraste=False ):
     # Inicializações
     descritores = []
     valor_entropia = 0.0
@@ -18,7 +18,7 @@ def descritores(matriz, entropia=True, homogeneidade=True, energia=True, contras
         for coluna in range(len(matriz[0])):
 
             # Calcular Entropia
-            if matriz[linha][coluna] > 0:
+            if (matriz[linha][coluna] > 0):
                 valor_entropia -= matriz[linha][coluna] * log(matriz[linha][coluna], 2)
 
             # Calcular Homogeneidade
@@ -42,7 +42,7 @@ def descritores(matriz, entropia=True, homogeneidade=True, energia=True, contras
 
     return descritores
 
-# Calcula os descritores de Haralick para um conjunto de matrizes de várias imagens
+# Calcula os descritores de Haralick para um conjunto de matrizes de várias imagens separadas por birads
 # @param lista 3D de [imagem][matrizes][matriz]
 # @return array de descritores de todas as imagens
 def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidade=True, energia=True, contraste=False):
@@ -50,12 +50,15 @@ def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidad
     set_descritores = []
 
     # Passa por cada matriz do conjunto de matrizes de cada imagem
-    for matrizes in set_matrizes:
-        descritores_imagem = []
-        for matriz in matrizes:
-                descritores_imagem.append(descritores(matriz, entropia, homogeneidade, energia, contraste))
-    
-        set_descritores.append(descritores_imagem)
+    for birads in set_matrizes:
+        set_birad = []
+        for matrizes in birads:
+            descritores_imagem = []
+            for matriz in matrizes:
+                    descritores_imagem.append(__descritores(matriz, entropia, homogeneidade, energia, contraste))
+        
+            set_birad.append(descritores_imagem)
+        set_descritores.append(set_birad)
 
     return set_descritores
 
@@ -69,6 +72,6 @@ def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, 
 
     # Passa por cada matriz das matrizes de uma imagem
     for matriz in matrizes:
-            descritores_imagem.append(descritores(matriz, entropia, homogeneidade, energia, contraste))
+            descritores_imagem.append(__descritores(matriz, entropia, homogeneidade, energia, contraste))
 
     return descritores_imagem
