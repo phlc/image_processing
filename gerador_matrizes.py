@@ -52,7 +52,7 @@ def calcula_matrizes_varias_imagens(gravar_arquivo, diretorio):
 # @param path da imagem
 # @return lista das matrizes da imagem 
 def calcula_matrizes_uma_imagem(path):
-    
+    print(path)
     # Abrir Imagem
     image = cv2.imread(path, 0)
 
