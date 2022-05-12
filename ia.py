@@ -1,5 +1,3 @@
-from pickletools import optimize
-from re import T
 import tensorflow as tf
 from matplotlib.pyplot import table
 import numpy as np
@@ -16,10 +14,10 @@ birad3 = []
 birad4 = []
 
 for instance in range(100):
-    birad1.append([np.reshape(dataset[0][instance], 20), 0])
-    birad2.append([np.reshape(dataset[1][instance], 20), 1])
-    birad3.append([np.reshape(dataset[2][instance], 20), 2])
-    birad4.append([np.reshape(dataset[3][instance], 20), 3])
+    birad1.append([np.reshape(dataset[0][instance], 15), [1,0,0,0]])
+    birad2.append([np.reshape(dataset[1][instance], 15), [0,1,0,0]])
+    birad3.append([np.reshape(dataset[2][instance], 15), [0,0,1,0]])
+    birad4.append([np.reshape(dataset[3][instance], 15), [0,0,0,1]])
 
 random.shuffle(birad1)
 random.shuffle(birad2)
@@ -58,10 +56,35 @@ for descritor, classe in training_data:
 train_X = np.array(train_X)
 train_y = np.array(train_y)
 
+test_X = []
+test_y = []
+
+for descritor, classe in test_data:
+    test_X.append(descritor)
+    test_y.append(classe)
+
+test_X = np.array(test_X)
+test_y = np.array(test_y)
+
 
 model = tf.keras.models.Sequential()
-model.add(tf.keras.layers.Dense(12, activation=tf.nn.relu))
+model.add(tf.keras.layers.Dense(42, activation=tf.nn.relu))
 model.add(tf.keras.layers.Dense(4, activation=tf.nn.softmax))
 
-model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=['accuracy'])
+model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=['accuracy', tf.keras.metrics.Precision()])
 model.fit(x=train_X, y=train_y, epochs=500)
+
+model.evaluate(x=test_X, y=test_y)
+
+# Salvar rede neural
+# rede_file = open('rede_neural.pkl',  'wb')
+# pickle.dump(model, rede_file)
+# rede_file.close()
+
+# Carregar rede neural
+# rede_file = open('rede_neural.pkl',  'rb')
+# model = pickle.load(rede_file)
+
+# Matriz de confusão
+# y_pred = model.predict(train_X)
+# confusion_matrix = sklearn.metrics.confusion_matrix(train_y, np.rint(y_pred))
