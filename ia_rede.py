@@ -85,13 +85,13 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
     modelo_rede = tf.keras.models.Sequential()
     modelo_rede.add(tf.keras.layers.Dense(42, activation=tf.nn.relu)) #adiciona camada oculta
     modelo_rede.add(tf.keras.layers.Dense(4, activation=tf.nn.softmax)) #adiciona camada de saída
-    modelo_rede.compile(optimizer="adam", loss="categorical_crossentropy", metrics=['accuracy'])#compilar rede
+    modelo_rede.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=['accuracy'])#compilar rede
     
     # Treinar Rede Neural
-    modelo_rede.fit(x=train_X, y=train_y, epochs=500)
+    modelo_rede.fit(x=train_X, y=train_y, epochs=10)
 
     # Testar Rede Neural
-    predictions = modelo_rede.predict(test_X)
+    predictions = modelo_rede.predict(test_X).argmax(1) +1
     metricas = [metrics.confusion_matrix(test_y, predictions), metrics.accuracy_score(test_y, predictions)]
 
     # Gravar modelo
@@ -99,7 +99,7 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
         output_rede = open('rede.pkl', 'wb')
         pickle.dump(modelo_rede, output_rede)
 
-        output_metricas = open('metricas_rede', 'wb')
+        output_metricas = open('metricas_rede.pkl', 'wb')
         pickle.dump(metricas, output_metricas)
 
 
@@ -108,7 +108,7 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
 # Testa uma imagem em uma Rede Neural
 # @param modelo da rede neural, descritores da imagem, número de descritores
 # @return classificação
-def classificar_svm(modelo_rede, descritores, numero_descritores=3):
+def classificar_rede(modelo_rede, descritores, numero_descritores=3):
     instancia = np.reshape(descritores, numero_descritores*5)
     instancia = instancia.reshape(1, -1)
-    return modelo_rede.predict(instancia)
+    return modelo_rede.predict(instancia).argmax(1) +1
