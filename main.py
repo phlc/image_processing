@@ -23,8 +23,8 @@ from gerador_matrizes import calcula_matrizes_uma_imagem
 class main:
     def __init__(self, master):
         self.master = master
-        self.imagePathOpened = ''
-        self.grayScale = 32
+        self.caminhoDaImagem = ''
+        self.numeroDeTons = 32
 
         # Configurações gerais
         self.corBackground = 'white'
@@ -57,35 +57,34 @@ class main:
         menu.add_cascade(label='Rede Neural', menu=menuRede)
         menuRede.add_command(label='Treinar', command=self.selectFilesDirectory) 
         menuRede.add_command(label='Testar', command=self.selectFilesDirectory) 
-        menuRede.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
 
         menuSVM = Menu(menu)
         menu.add_cascade(label='SVM', menu=menuRede)
         menuSVM.add_command(label='Treinar', command=self.selectFilesDirectory) 
         menuSVM.add_command(label='Testar', command=self.selectFilesDirectory) 
-        menuSVM.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
 
         menuImagem = Menu(menu)
         menu.add_cascade(label='Imagem', menu=menuImagem)
         menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
-        menuImagem.add_command(label='Reamostrar imagem', command=self.reamostrar_imagem)
         
         # Criação do frame e do botão para calcular os descritores da imagem selecionada
         self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
         self.frame_inferior.pack(side=BOTTOM)
-        self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.imagePathOpened))
+        self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.caminhoDaImagem))
         self.botao_calculo_descritores.grid(row=1, column=3, padx=10, pady=5)
 
         self.slider_reamostragem = Scale(self.frame_inferior, from_=2, to=32, orient=HORIZONTAL)
         self.slider_reamostragem.set(32)
-        print(self.slider_reamostragem.get())
         self.slider_reamostragem.grid(row=0, column=2, padx=10, pady=5)
 
         self.botao_reamostrar = Button(self.frame_inferior, text='Reamostrar', width=15, command=self.reamostrar_imagem)
         self.botao_reamostrar.grid(row=1, column=2, padx=10, pady=5)
 
-        self.botao_reamostrar = Button(self.frame_inferior, text='Classificar', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.imagePathOpened))
-        self.botao_reamostrar.grid(row=1, column=4, padx=10, pady=5)
+        self.botao_classificar_svm = Button(self.frame_inferior, text='Classificar (SVM)', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.caminhoDaImagem))
+        self.botao_classificar_svm.grid(row=1, column=4, padx=10, pady=5)
+
+        self.botao_classificar_rede = Button(self.frame_inferior, text='Classificar (RN)', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.caminhoDaImagem))
+        self.botao_classificar_rede.grid(row=0, column=4, padx=10, pady=5)
 
 
     def selectFilesDirectory(self): 
@@ -130,7 +129,7 @@ class main:
 
         # Abrir a imagem no canvas
         if(filenames):            
-            self.imagePathOpened = filenames
+            self.caminhoDaImagem = filenames
             image = PIL.Image.open(filenames[0])
             # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
             resized_image= image.resize((500,500))
@@ -200,19 +199,23 @@ class main:
         
 
     def reamostrar_imagem(self):
-        numeroDeTons = self.slider_reamostragem.get()
-        imagem = io.imread(self.imagePathOpened[0])
+        self.numeroDeTons = self.slider_reamostragem.get() - 1
+        imagem = io.imread(self.caminhoDaImagem[0])
         imagem = np.array(imagem)
         maiorTom = imagem.max()
         # print(maiorTom)
         # Reamostrar imagem para 32 tons de cinza
         for i in range(len(imagem)):
             for j in range(len(imagem)):
-                imagem[i][j] = int(imagem[i][j]/maiorTom * (numeroDeTons-1))
+                imagem[i][j] = int(imagem[i][j]/maiorTom * (self.numeroDeTons))
 
-        imagemReamostrada = plt.imshow(imagem, cmap='gray', vmax=(numeroDeTons-1))
+        imagemReamostrada = plt.imshow(imagem, cmap='gray', vmax=(self.numeroDeTons))
         plt.colorbar(imagemReamostrada)
         plt.show()
+
+    def treinar_rede_neural(self):
+        return
+
 
 
 if __name__ == '__main__':
