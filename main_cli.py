@@ -1,7 +1,10 @@
 import gerador_matrizes as gm
 import descritores_haralick as dh
+import ia_svm
 import pickle
 import numpy as np
+from sklearn import svm
+from sklearn import metrics
 
 # Calcular set de matrizes de todas imagens / diretorio default / número de tons default (argumento -> numero_tons)
 # set_matrizes_todas_imagens = gm.calcula_matrizes_varias_imagens(gravar_arquivo="True")
@@ -21,8 +24,11 @@ descritores_todas_imagens = dh.calcula_descritores_varias_imagens(set_matrizes_t
 # Calcular descritores para matrizes de uma única imagem
 descritores_uma_imagem = dh.calcula_descritores_uma_imagem(set_matrizes_uma_imagem)
 
+# Treinar uma SVM (argumento numero_descritores Default)
+(modelo_svm, metricas) = ia_svm.treinar_svm(descritores_todas_imagens=descritores_todas_imagens, gravar_svm=True)
 
-print(len(descritores_todas_imagens))
-print(len(descritores_todas_imagens[0]))
-print(len(descritores_todas_imagens[0][0]))
-print(len(descritores_todas_imagens[0][0][0]))
+# Classificar uma imagem (a partir de seus descritores)
+classe = ia_svm.classificar_svm(modelo_svm, descritores_uma_imagem)
+
+print(metricas)
+print(classe)

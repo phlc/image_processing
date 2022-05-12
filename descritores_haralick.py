@@ -66,7 +66,7 @@ def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidad
 # Calcula os descritores de Haralick para um conjunto de matrizes uma imagem
 # @param lista 2d de [matrizes][matriz] 
 # @return array de descritores da imagem
-def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, energia=True, contraste=True):
+def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, energia=True, contraste=False):
     # Lista de descritores para cada matriz
     descritores_imagem = []
 
