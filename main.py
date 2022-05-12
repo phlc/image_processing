@@ -219,20 +219,22 @@ class main:
 
 
     def realizar_treino_svm(self):
-        matrizesDeTodasAsImagens = open("dataset_matrizes.pkl", "rb")
-        if not matrizesDeTodasAsImagens:
+        try:
+            matrizesDeTodasAsImagens = open("dataset_matrizes.pkl", "rb")
+            matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens))
+        except:
             diretorioImagens = self.selecionar_diretorio_imagens()
             showinfo(message="Obtendo matrizes de coocorrência...")
             matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
         
-        matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens))
-        descritoresTodasAsImagens = open("dataset.pkl", "rb")
+        try:
+            descritoresTodasAsImagens = open("dataset.pkl", "rb")
+            descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens))
 
-        if not descritoresTodasAsImagens:
+        except:
             showinfo(message="Obtendo descritores...")
             descritoresTodasAsImagens = calcula_descritores_varias_imagens(matrizesDeTodasAsImagens)
         
-        descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens))
         [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_svm=True)
 
         self.modelo_svm = modelo
