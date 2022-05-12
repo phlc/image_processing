@@ -31,10 +31,10 @@ def __descritores(matriz, entropia=True, homogeneidade=True, energia=True, contr
             valor_contraste += (linha - coluna) ** 2 * matriz[linha][coluna]
     
     # Criar lista de descritores de acordo com opções
-    if(entropia):
-        descritores.append(valor_entropia)
     if(homogeneidade):
         descritores.append(valor_homogeneidade)
+    if(entropia):
+        descritores.append(valor_entropia)
     if(energia):
         descritores.append(valor_energia)
     if(contraste):
@@ -66,7 +66,7 @@ def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidad
 # Calcula os descritores de Haralick para um conjunto de matrizes uma imagem
 # @param lista 2d de [matrizes][matriz] 
 # @return array de descritores da imagem
-def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, energia=True, contraste=False):
+def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, energia=True, contraste=True):
     # Lista de descritores para cada matriz
     descritores_imagem = []
 
