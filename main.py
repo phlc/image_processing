@@ -168,19 +168,18 @@ class main:
         tabelaDeDescritores.heading("Homogeneidade",text="Homogeneidade",anchor=CENTER)
         tabelaDeDescritores.heading("Entropia",text="Entropia",anchor=CENTER)
         tabelaDeDescritores.heading("Energia",text="Energia",anchor=CENTER)
-        tabelaDeDescritores.heading("Contraste",text="Contraste",anchor=CENTER)
 
         # Populando a tabela com os dados dos descritores
         tabelaDeDescritores.insert(parent='',index='end',iid=0,text='',
-        values=('C1',descritores[0][0],descritores[0][1],descritores[0][2], descritores[0][3] ))
+        values=('C1',descritores[0][0],descritores[0][1],descritores[0][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=1,text='',
-        values=('C2',descritores[1][0],descritores[1][1],descritores[1][2], descritores[1][3]))
+        values=('C2',descritores[1][0],descritores[1][1],descritores[1][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=2,text='',
-        values=('C4',descritores[2][0],descritores[2][1],descritores[2][2], descritores[2][3]))
+        values=('C4',descritores[2][0],descritores[2][1],descritores[2][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=3,text='',
-        values=('C8',descritores[3][0],descritores[3][1],descritores[3][2], descritores[3][3]))
+        values=('C8',descritores[3][0],descritores[3][1],descritores[3][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=4,text='',
-        values=('C16',descritores[4][0],descritores[4][1],descritores[4][2], descritores[4][3]))
+        values=('C16',descritores[4][0],descritores[4][1],descritores[4][2]))
 
         tabelaDeDescritores.pack()
         
@@ -203,7 +202,7 @@ class main:
 
     def obter_descritores_das_imagens(self, matrizesDeTodasAsImagens):
         try:
-            descritoresTodasAsImagens = open("dataset.pkl", "rb")
+            descritoresTodasAsImagens = open("dados\\dataset.pkl", "rb")
             descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens))
         except:
             showinfo(message="Obtendo descritores...")
@@ -213,7 +212,7 @@ class main:
 
     def obter_matrizes_coocorrencia(self):
         try:
-            matrizesDeTodasAsImagens = open("dataset_matrizes.pkl", "rb")
+            matrizesDeTodasAsImagens = open("dados\\dataset_matrizes.pkl", "rb")
             matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens))
         except:
             diretorioImagens = self.selecionar_diretorio_imagens()
@@ -223,7 +222,9 @@ class main:
 
     
     def realizar_treino_svm(self):
+        print("Obter")
         matrizesDeTodasAsImagens = self.obter_matrizes_coocorrencia()
+        print("Fim")
         descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
         
         [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_svm=True)
@@ -255,7 +256,7 @@ class main:
 
 
     def classificar_imagem_svm(self):
-        classeDaImagem = classificar_svm(modelo_rede=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
+        classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
         mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
         showinfo(message=mensagem)
 
