@@ -53,9 +53,11 @@ class main:
 
         menuOpcoes = Menu(menu)
         menu.add_cascade(label='Opções', menu=menuOpcoes)
-         
-        
-        menuOpcoes.add_command(label='Sair', command=self.master.destroy) 
+
+        menuCoocor = Menu(menu)
+        menuOpcoes.add_command(label='Sair', command=self.master.destroy)
+        menu.add_cascade(label='Matrizes Treino', menu=menuCoocor)
+        menuCoocor.add_command(label='Calcular Matrizes de co-ocorrência Treino', command=self.calcular_matrizes_teste)
 
         menuRede = Menu(menu)
         menu.add_cascade(label='Rede Neural', menu=menuRede)
@@ -153,10 +155,10 @@ class main:
 
         # Instanciação da tabela e definição das suas colunas
         tabelaDeDescritores = Treeview(table_frame)
-        tabelaDeDescritores['columns'] = ('Matriz de Coocorrência','Homogeneidade', 'Entropia', 'Energia', 'Contraste')
+        tabelaDeDescritores['columns'] = ('Matriz de Co-ocorrência','Homogeneidade', 'Entropia', 'Energia', 'Contraste')
 
         tabelaDeDescritores.column("#0", width=0,  stretch=NO)
-        tabelaDeDescritores.column("Matriz de Coocorrência",anchor=CENTER, width=140)
+        tabelaDeDescritores.column("Matriz de Co-ocorrência",anchor=CENTER, width=140)
         tabelaDeDescritores.column("Homogeneidade",anchor=CENTER,width=120)
         tabelaDeDescritores.column("Entropia",anchor=CENTER,width=120)
         tabelaDeDescritores.column("Energia",anchor=CENTER,width=120)
@@ -164,7 +166,7 @@ class main:
 
         # Criação do cabeçalho da tabela
         tabelaDeDescritores.heading("#0",text="",anchor=CENTER)
-        tabelaDeDescritores.heading("Matriz de Coocorrência",text="Matriz de Coocorrência",anchor=CENTER)
+        tabelaDeDescritores.heading("Matriz de Co-ocorrência",text="Matriz de Co-ocorrência",anchor=CENTER)
         tabelaDeDescritores.heading("Homogeneidade",text="Homogeneidade",anchor=CENTER)
         tabelaDeDescritores.heading("Entropia",text="Entropia",anchor=CENTER)
         tabelaDeDescritores.heading("Energia",text="Energia",anchor=CENTER)
@@ -203,7 +205,7 @@ class main:
 
     def obter_descritores_das_imagens(self, matrizesDeTodasAsImagens):
         try:
-            descritoresTodasAsImagens_arquivo = open("dataset.pkl", "rb")
+            descritoresTodasAsImagens_arquivo = open("dados\\dataset.pkl", "rb")
             descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens_arquivo))
             descritoresTodasAsImagens_arquivo.close()
         except:
@@ -214,13 +216,13 @@ class main:
 
     def obter_matrizes_coocorrencia(self):
         try:
-            matrizesDeTodasAsImagens_arquivo = open("dataset_matrizes.pkl", "rb")
+            matrizesDeTodasAsImagens_arquivo = open("dados\\dataset_matrizes.pkl", "rb")
             matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens_arquivo))
             matrizesDeTodasAsImagens_arquivo.close()
 
         except:
             diretorioImagens = self.selecionar_diretorio_imagens()
-            showinfo(message="Obtendo matrizes de coocorrência...")
+            showinfo(message="Obtendo matrizes de co-ocorrência...")
             matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
         return matrizesDeTodasAsImagens
 
@@ -251,6 +253,11 @@ class main:
         self.metricas_rede = metricas
         print(self.metricas_rede)
 
+    def calcular_matrizes_teste(self):
+        diretorioImagens = self.selecionar_diretorio_imagens()
+        showinfo(message="Calculando matrizes de co-ocorrência...")
+        matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
+        showinfo(message="Matrizes de co-ocorrência calculadas com sucesso!")
 
     def testar_rede_neural(self):
         if(self.metricas_rede):

@@ -19,10 +19,10 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
     # Incluir em cada birad uma com os descritores de cada imagem, transformados em uma arranjo 1D e a classificação
     #[arranjo descritores, classificação]
     for instance in range(len(descritores_todas_imagens[0])):
-        birad1.append([np.reshape(descritores_todas_imagens[0][instance], numero_descritores*5), 1])
-        birad2.append([np.reshape(descritores_todas_imagens[1][instance], numero_descritores*5), 2])
-        birad3.append([np.reshape(descritores_todas_imagens[2][instance], numero_descritores*5), 3])
-        birad4.append([np.reshape(descritores_todas_imagens[3][instance], numero_descritores*5), 4])
+        birad1.append([np.reshape(descritores_todas_imagens[0][instance], numero_descritores*5), 0])
+        birad2.append([np.reshape(descritores_todas_imagens[1][instance], numero_descritores*5), 1])
+        birad3.append([np.reshape(descritores_todas_imagens[2][instance], numero_descritores*5), 2])
+        birad4.append([np.reshape(descritores_todas_imagens[3][instance], numero_descritores*5), 3])
 
     # Embaralhar as amostras para randomizar os conjuntos de treino e teste
     random.shuffle(birad1)
@@ -88,18 +88,18 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
     modelo_rede.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=['accuracy'])#compilar rede
     
     # Treinar Rede Neural
-    modelo_rede.fit(x=train_X, y=train_y, epochs=10)
+    modelo_rede.fit(x=train_X, y=train_y, epochs=500)
 
     # Testar Rede Neural
-    predictions = modelo_rede.predict(test_X).argmax(1) +1
+    predictions = modelo_rede.predict(test_X).argmax(1)
     metricas = [metrics.confusion_matrix(test_y, predictions), metrics.accuracy_score(test_y, predictions)]
 
     # Gravar modelo
     if (gravar_rede):
-        output_rede = open('rede.pkl', 'wb')
+        output_rede = open('dados\\rede.pkl', 'wb')
         pickle.dump(modelo_rede, output_rede)
 
-        output_metricas = open('metricas_rede.pkl', 'wb')
+        output_metricas = open('dados\\metricas_rede.pkl', 'wb')
         pickle.dump(metricas, output_metricas)
 
 

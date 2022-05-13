@@ -12,7 +12,7 @@ from sklearn import metrics
 # set_matrizes_todas_imagens = gm.calcula_matrizes_varias_imagens(gravar_arquivo="True")
 
 # Carregar set_matrizes_todas_imagens  do arquivo dataset_matrizes.pkl
-input = open('dataset_matrizes.pkl', 'rb')
+input = open('dados\\dataset_matrizes.pkl', 'rb')
 set_matrizes_todas_imagens = np.array(pickle.load(input))
 input.close()
 print("Arquivo dataset_matrizes.pkl carregado.")

@@ -95,10 +95,10 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=Fals
 
     # Gravar modelo
     if (gravar_svm):
-        output_svm = open('svm.pkl', 'wb')
+        output_svm = open('dados\\svm.pkl', 'wb')
         pickle.dump(modelo_svm, output_svm)
 
-        output_metricas = open('metricas_svm.pkl', 'wb')
+        output_metricas = open('dados\\metricas_svm.pkl', 'wb')
         pickle.dump(metricas, output_metricas)
 
     showinfo(message="Treino da SVM finalizado!")
