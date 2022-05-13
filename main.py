@@ -20,6 +20,7 @@ from descritores_haralick import calcula_descritores_uma_imagem, calcula_descrit
 import matplotlib.pyplot as plt
 
 from gerador_matrizes import calcula_matrizes_uma_imagem, calcula_matrizes_varias_imagens
+from ia_rede import classificar_rede, treinar_rede_neural
 from ia_svm import classificar_svm, treinar_svm
 # from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -95,24 +96,6 @@ class main:
         fileDirectory = fd.askdirectory()
         if(fileDirectory):
             return fileDirectory
-            #chama função do Pedro
-
-            # # obter os subdiretórios do diretório selecionado
-            # subdirectories = os.listdir(filedirectory)
-            # descriptorsMatrix = []
-            # if(subdirectories):
-            #     for index, subdirectory in enumerate(subdirectories):
-            #         descriptorsMatrix.append(subdirectory)
-            #         descriptorsMatrix[index] = []
-            #         imagesPathsList = os.listdir(filedirectory + '/' + subdirectory)
-            #         # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
-            #         filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
-            #         formatedFilteredPaths = list(map(lambda path: filedirectory + '/' + subdirectory + '/' + path, filteredPaths))
-
-            #         # obter os descritores para as imagens por diretório
-            #         if(formatedFilteredPaths):  
-            #             descriptorsMatrix[index].append(calculateHaralickDescriptorsForAllImages(formatedFilteredPaths))
-
 
 
 
@@ -207,7 +190,7 @@ class main:
         imagem = io.imread(self.caminhoDaImagem[0])
         imagem = np.array(imagem)
         maiorTom = imagem.max()
-        # print(maiorTom)
+
         # Reamostrar imagem para 32 tons de cinza
         for i in range(len(imagem)):
             for j in range(len(imagem)):
@@ -218,7 +201,17 @@ class main:
         plt.show()
 
 
-    def realizar_treino_svm(self):
+    def obter_descritores_das_imagens(self, matrizesDeTodasAsImagens):
+        try:
+            descritoresTodasAsImagens = open("dataset.pkl", "rb")
+            descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens))
+        except:
+            showinfo(message="Obtendo descritores...")
+            descritoresTodasAsImagens = calcula_descritores_varias_imagens(matrizesDeTodasAsImagens)
+        return descritoresTodasAsImagens
+
+
+    def obter_matrizes_coocorrencia(self):
         try:
             matrizesDeTodasAsImagens = open("dataset_matrizes.pkl", "rb")
             matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens))
@@ -226,14 +219,12 @@ class main:
             diretorioImagens = self.selecionar_diretorio_imagens()
             showinfo(message="Obtendo matrizes de coocorrência...")
             matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
-        
-        try:
-            descritoresTodasAsImagens = open("dataset.pkl", "rb")
-            descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens))
+        return matrizesDeTodasAsImagens
 
-        except:
-            showinfo(message="Obtendo descritores...")
-            descritoresTodasAsImagens = calcula_descritores_varias_imagens(matrizesDeTodasAsImagens)
+    
+    def realizar_treino_svm(self):
+        matrizesDeTodasAsImagens = self.obter_matrizes_coocorrencia()
+        descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
         
         [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_svm=True)
 
@@ -246,9 +237,31 @@ class main:
         if(self.metricas_svm):
             showinfo(message=self.metricas_svm)
 
+    
+    def realizar_treino_rede_neural(self):
+        matrizesDeTodasAsImagens = self.obter_matrizes_coocorrencia()
+        descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
+        
+        [modelo, metricas] = treinar_rede_neural(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_rede=True)
+
+        self.modelo_rede = modelo
+        self.metricas_rede = metricas
+        print(self.metricas_rede)
+
+
+    def testar_rede_neural(self):
+        if(self.metricas_rede):
+            showinfo(message=self.metricas_rede)
+
 
     def classificar_imagem_svm(self):
-        classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
+        classeDaImagem = classificar_svm(modelo_rede=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
+        mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
+        showinfo(message=mensagem)
+
+
+    def classificar_imagem_rede_neural(self):
+        classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=3)
         mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
         showinfo(message=mensagem)
 
