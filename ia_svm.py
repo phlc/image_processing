@@ -4,13 +4,13 @@ import pickle
 import random
 from sklearn import svm
 from sklearn import metrics
-
+from tkinter.messagebox import showinfo
 
 # Treina e testa uma SVM a partir de um conjunto de descritores de todas imagens
 # @param conjunto de descritores de todas imagens, número de descritores, opção gravar SVM em arquivo
 # @return [SVM, metricas do teste]
 def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=False):
-
+    showinfo(message="Treino da SVM iniciado!")
     # Descritores separados por Birad
     birad1 = []
     birad2 = []
@@ -101,8 +101,9 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=Fals
         output_metricas = open('metricas_svm.pkl', 'wb')
         pickle.dump(metricas, output_metricas)
 
-
+    showinfo(message="Treino da SVM finalizado!")
     return(modelo_svm, metricas)
+
 
 # Testa uma imagem em uma SVM
 # @param modelo da svm, descritores da imagem, número de descritores

@@ -1,7 +1,9 @@
 # Biblioteca: skimage
 # https://scikit-image.org/docs/0.19.x/
 from array import array
+from email import message
 import os
+import pickle
 from tkinter.ttk import Treeview
 import numpy as np
 from PIL import ImageTk
@@ -14,17 +16,19 @@ from tkinter.messagebox import showinfo
 
 from skimage import io
 
-from descritores_haralick import calcula_descritores_uma_imagem
+from descritores_haralick import calcula_descritores_uma_imagem, calcula_descritores_varias_imagens
 import matplotlib.pyplot as plt
 
-from gerador_matrizes import calcula_matrizes_uma_imagem
+from gerador_matrizes import calcula_matrizes_uma_imagem, calcula_matrizes_varias_imagens
+from ia_rede import classificar_rede, treinar_rede_neural
+from ia_svm import classificar_svm, treinar_svm
 # from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class main:
     def __init__(self, master):
         self.master = master
-        self.imagePathOpened = ''
-        self.grayScale = 32
+        self.caminhoDaImagem = ''
+        self.numeroDeTons = 32
 
         # Configurações gerais
         self.corBackground = 'white'
@@ -55,62 +59,43 @@ class main:
 
         menuRede = Menu(menu)
         menu.add_cascade(label='Rede Neural', menu=menuRede)
-        menuRede.add_command(label='Treinar', command=self.selectFilesDirectory) 
-        menuRede.add_command(label='Testar', command=self.selectFilesDirectory) 
-        menuRede.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
+        menuRede.add_command(label='Treinar', command=self.selecionar_diretorio_imagens) 
+        menuRede.add_command(label='Testar', command=self.selecionar_diretorio_imagens) 
 
         menuSVM = Menu(menu)
-        menu.add_cascade(label='SVM', menu=menuRede)
-        menuSVM.add_command(label='Treinar', command=self.selectFilesDirectory) 
-        menuSVM.add_command(label='Testar', command=self.selectFilesDirectory) 
-        menuSVM.add_command(label='Classificar uma imagem', command=self.selectFilesDirectory) 
+        menu.add_cascade(label='SVM', menu=menuSVM)
+        menuSVM.add_command(label='Treinar', command=self.realizar_treino_svm) 
+        menuSVM.add_command(label='Testar', command=self.testar_svm) 
 
         menuImagem = Menu(menu)
         menu.add_cascade(label='Imagem', menu=menuImagem)
         menuImagem.add_command(label='Selecionar imagem', command=self.selectImages)
-        menuImagem.add_command(label='Reamostrar imagem', command=self.reamostrar_imagem)
         
         # Criação do frame e do botão para calcular os descritores da imagem selecionada
         self.frame_inferior = Frame(self.master, padx = 5, pady = 5)
         self.frame_inferior.pack(side=BOTTOM)
-        self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.imagePathOpened))
+        self.botao_calculo_descritores = Button(self.frame_inferior, text='Calcular descritores', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.caminhoDaImagem))
         self.botao_calculo_descritores.grid(row=1, column=3, padx=10, pady=5)
 
         self.slider_reamostragem = Scale(self.frame_inferior, from_=2, to=32, orient=HORIZONTAL)
         self.slider_reamostragem.set(32)
-        print(self.slider_reamostragem.get())
         self.slider_reamostragem.grid(row=0, column=2, padx=10, pady=5)
 
         self.botao_reamostrar = Button(self.frame_inferior, text='Reamostrar', width=15, command=self.reamostrar_imagem)
         self.botao_reamostrar.grid(row=1, column=2, padx=10, pady=5)
 
-        self.botao_reamostrar = Button(self.frame_inferior, text='Classificar', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.imagePathOpened))
-        self.botao_reamostrar.grid(row=1, column=4, padx=10, pady=5)
+        self.botao_classificar_svm = Button(self.frame_inferior, text='Classificar (SVM)', width=15, command=self.classificar_imagem_svm )
+        self.botao_classificar_svm.grid(row=1, column=4, padx=10, pady=5)
+
+        self.botao_classificar_rede = Button(self.frame_inferior, text='Classificar (RN)', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.caminhoDaImagem))
+        self.botao_classificar_rede.grid(row=0, column=4, padx=10, pady=5)
 
 
-    def selectFilesDirectory(self): 
+    def selecionar_diretorio_imagens(self): 
         # selecionar um diretorio de imagens
         fileDirectory = fd.askdirectory()
         if(fileDirectory):
             return fileDirectory
-            #chama função do Pedro
-
-            # # obter os subdiretórios do diretório selecionado
-            # subdirectories = os.listdir(filedirectory)
-            # descriptorsMatrix = []
-            # if(subdirectories):
-            #     for index, subdirectory in enumerate(subdirectories):
-            #         descriptorsMatrix.append(subdirectory)
-            #         descriptorsMatrix[index] = []
-            #         imagesPathsList = os.listdir(filedirectory + '/' + subdirectory)
-            #         # filtrar os caminhos obtidos para obter somente arquivos .png e .jpg e então formatá-lo
-            #         filteredPaths = filter(lambda image: ".png" in image or ".jpg" in image, imagesPathsList)
-            #         formatedFilteredPaths = list(map(lambda path: filedirectory + '/' + subdirectory + '/' + path, filteredPaths))
-
-            #         # obter os descritores para as imagens por diretório
-            #         if(formatedFilteredPaths):  
-            #             descriptorsMatrix[index].append(calculateHaralickDescriptorsForAllImages(formatedFilteredPaths))
-
 
 
 
@@ -130,7 +115,7 @@ class main:
 
         # Abrir a imagem no canvas
         if(filenames):            
-            self.imagePathOpened = filenames
+            self.caminhoDaImagem = filenames
             image = PIL.Image.open(filenames[0])
             # fazer resize da imagem só para exibir a imagem. Nos cálculos é utilizada a imagem com o tamanho original
             resized_image= image.resize((500,500))
@@ -147,6 +132,7 @@ class main:
         matrizesCoocorrencia = calcula_matrizes_uma_imagem(str(imagePath[0]))
         descritores = calcula_descritores_uma_imagem(matrizes=matrizesCoocorrencia)
         totalTime = "Tempo de execução: {:.2f} segundos\n".format(time.time() - tempoInicial) 
+        self.descritoresImagemExibida = descritores
 
         # Criação da janela auxiliar para a exibição da tabela de descritores
         janelaDeDescritores = Toplevel(self.master)
@@ -200,19 +186,84 @@ class main:
         
 
     def reamostrar_imagem(self):
-        numeroDeTons = self.slider_reamostragem.get()
-        imagem = io.imread(self.imagePathOpened[0])
+        self.numeroDeTons = self.slider_reamostragem.get() - 1
+        imagem = io.imread(self.caminhoDaImagem[0])
         imagem = np.array(imagem)
         maiorTom = imagem.max()
-        # print(maiorTom)
+
         # Reamostrar imagem para 32 tons de cinza
         for i in range(len(imagem)):
             for j in range(len(imagem)):
-                imagem[i][j] = int(imagem[i][j]/maiorTom * (numeroDeTons-1))
+                imagem[i][j] = int(imagem[i][j]/maiorTom * (self.numeroDeTons))
 
-        imagemReamostrada = plt.imshow(imagem, cmap='gray', vmax=(numeroDeTons-1))
+        imagemReamostrada = plt.imshow(imagem, cmap='gray', vmax=(self.numeroDeTons))
         plt.colorbar(imagemReamostrada)
         plt.show()
+
+
+    def obter_descritores_das_imagens(self, matrizesDeTodasAsImagens):
+        try:
+            descritoresTodasAsImagens = open("dataset.pkl", "rb")
+            descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens))
+        except:
+            showinfo(message="Obtendo descritores...")
+            descritoresTodasAsImagens = calcula_descritores_varias_imagens(matrizesDeTodasAsImagens)
+        return descritoresTodasAsImagens
+
+
+    def obter_matrizes_coocorrencia(self):
+        try:
+            matrizesDeTodasAsImagens = open("dataset_matrizes.pkl", "rb")
+            matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens))
+        except:
+            diretorioImagens = self.selecionar_diretorio_imagens()
+            showinfo(message="Obtendo matrizes de coocorrência...")
+            matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
+        return matrizesDeTodasAsImagens
+
+    
+    def realizar_treino_svm(self):
+        matrizesDeTodasAsImagens = self.obter_matrizes_coocorrencia()
+        descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
+        
+        [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_svm=True)
+
+        self.modelo_svm = modelo
+        self.metricas_svm = metricas
+        print(self.metricas_svm)
+
+
+    def testar_svm(self):
+        if(self.metricas_svm):
+            showinfo(message=self.metricas_svm)
+
+    
+    def realizar_treino_rede_neural(self):
+        matrizesDeTodasAsImagens = self.obter_matrizes_coocorrencia()
+        descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
+        
+        [modelo, metricas] = treinar_rede_neural(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_rede=True)
+
+        self.modelo_rede = modelo
+        self.metricas_rede = metricas
+        print(self.metricas_rede)
+
+
+    def testar_rede_neural(self):
+        if(self.metricas_rede):
+            showinfo(message=self.metricas_rede)
+
+
+    def classificar_imagem_svm(self):
+        classeDaImagem = classificar_svm(modelo_rede=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
+        mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
+        showinfo(message=mensagem)
+
+
+    def classificar_imagem_rede_neural(self):
+        classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=3)
+        mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
+        showinfo(message=mensagem)
 
 
 if __name__ == '__main__':
