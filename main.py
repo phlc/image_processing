@@ -53,14 +53,16 @@ class main:
 
         menuOpcoes = Menu(menu)
         menu.add_cascade(label='Opções', menu=menuOpcoes)
-         
-        
-        menuOpcoes.add_command(label='Sair', command=self.master.destroy) 
+
+        menuCoocor = Menu(menu)
+        menuOpcoes.add_command(label='Sair', command=self.master.destroy)
+        menu.add_cascade(label='Matrizes Treino', menu=menuCoocor)
+        menuCoocor.add_command(label='Calcular Matrizes de co-ocorrência Treino', command=self.calcular_matrizes_teste)
 
         menuRede = Menu(menu)
         menu.add_cascade(label='Rede Neural', menu=menuRede)
-        menuRede.add_command(label='Treinar', command=self.selecionar_diretorio_imagens) 
-        menuRede.add_command(label='Testar', command=self.selecionar_diretorio_imagens) 
+        menuRede.add_command(label='Treinar', command=self.realizar_treino_rede_neural) 
+        menuRede.add_command(label='Testar', command=self.testar_rede_neural) 
 
         menuSVM = Menu(menu)
         menu.add_cascade(label='SVM', menu=menuSVM)
@@ -87,7 +89,7 @@ class main:
         self.botao_classificar_svm = Button(self.frame_inferior, text='Classificar (SVM)', width=15, command=self.classificar_imagem_svm )
         self.botao_classificar_svm.grid(row=1, column=4, padx=10, pady=5)
 
-        self.botao_classificar_rede = Button(self.frame_inferior, text='Classificar (RN)', width=15, command=lambda: self.exibir_descritores_imagem(imagePath=self.caminhoDaImagem))
+        self.botao_classificar_rede = Button(self.frame_inferior, text='Classificar (RN)', width=15, command=self.classificar_imagem_rede_neural )
         self.botao_classificar_rede.grid(row=0, column=4, padx=10, pady=5)
 
 
@@ -153,10 +155,10 @@ class main:
 
         # Instanciação da tabela e definição das suas colunas
         tabelaDeDescritores = Treeview(table_frame)
-        tabelaDeDescritores['columns'] = ('Matriz de Coocorrência','Homogeneidade', 'Entropia', 'Energia', 'Contraste')
+        tabelaDeDescritores['columns'] = ('Matriz de Co-ocorrência','Homogeneidade', 'Entropia', 'Energia', 'Contraste')
 
         tabelaDeDescritores.column("#0", width=0,  stretch=NO)
-        tabelaDeDescritores.column("Matriz de Coocorrência",anchor=CENTER, width=140)
+        tabelaDeDescritores.column("Matriz de Co-ocorrência",anchor=CENTER, width=140)
         tabelaDeDescritores.column("Homogeneidade",anchor=CENTER,width=120)
         tabelaDeDescritores.column("Entropia",anchor=CENTER,width=120)
         tabelaDeDescritores.column("Energia",anchor=CENTER,width=120)
@@ -164,10 +166,11 @@ class main:
 
         # Criação do cabeçalho da tabela
         tabelaDeDescritores.heading("#0",text="",anchor=CENTER)
-        tabelaDeDescritores.heading("Matriz de Coocorrência",text="Matriz de Coocorrência",anchor=CENTER)
+        tabelaDeDescritores.heading("Matriz de Co-ocorrência",text="Matriz de Co-ocorrência",anchor=CENTER)
         tabelaDeDescritores.heading("Homogeneidade",text="Homogeneidade",anchor=CENTER)
         tabelaDeDescritores.heading("Entropia",text="Entropia",anchor=CENTER)
         tabelaDeDescritores.heading("Energia",text="Energia",anchor=CENTER)
+        tabelaDeDescritores.heading("Contraste",text="Contraste",anchor=CENTER)
 
         # Populando a tabela com os dados dos descritores
         tabelaDeDescritores.insert(parent='',index='end',iid=0,text='',
@@ -202,8 +205,9 @@ class main:
 
     def obter_descritores_das_imagens(self, matrizesDeTodasAsImagens):
         try:
-            descritoresTodasAsImagens = open("dados\\dataset.pkl", "rb")
-            descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens))
+            descritoresTodasAsImagens_arquivo = open("dados\\dataset.pkl", "rb")
+            descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens_arquivo))
+            descritoresTodasAsImagens_arquivo.close()
         except:
             showinfo(message="Obtendo descritores...")
             descritoresTodasAsImagens = calcula_descritores_varias_imagens(matrizesDeTodasAsImagens)
@@ -212,19 +216,19 @@ class main:
 
     def obter_matrizes_coocorrencia(self):
         try:
-            matrizesDeTodasAsImagens = open("dados\\dataset_matrizes.pkl", "rb")
-            matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens))
+            matrizesDeTodasAsImagens_arquivo = open("dados\\dataset_matrizes.pkl", "rb")
+            matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens_arquivo))
+            matrizesDeTodasAsImagens_arquivo.close()
+
         except:
             diretorioImagens = self.selecionar_diretorio_imagens()
-            showinfo(message="Obtendo matrizes de coocorrência...")
+            showinfo(message="Obtendo matrizes de co-ocorrência...")
             matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
         return matrizesDeTodasAsImagens
 
     
     def realizar_treino_svm(self):
-        print("Obter")
         matrizesDeTodasAsImagens = self.obter_matrizes_coocorrencia()
-        print("Fim")
         descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
         
         [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_svm=True)
@@ -249,6 +253,11 @@ class main:
         self.metricas_rede = metricas
         print(self.metricas_rede)
 
+    def calcular_matrizes_teste(self):
+        diretorioImagens = self.selecionar_diretorio_imagens()
+        showinfo(message="Calculando matrizes de co-ocorrência...")
+        matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
+        showinfo(message="Matrizes de co-ocorrência calculadas com sucesso!")
 
     def testar_rede_neural(self):
         if(self.metricas_rede):
