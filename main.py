@@ -18,6 +18,8 @@ from skimage import io
 
 from descritores_haralick import calcula_descritores_uma_imagem, calcula_descritores_varias_imagens
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sn
 
 from gerador_matrizes import calcula_matrizes_uma_imagem, calcula_matrizes_varias_imagens
 from ia_rede import classificar_rede, treinar_rede_neural
@@ -240,7 +242,12 @@ class main:
 
     def testar_svm(self):
         if(self.metricas_svm):
-            showinfo(message=self.metricas_svm)
+            matrizFormatada = pd.DataFrame(self.metricas_svm[0], range(1, 5), range(1, 5))
+            plt.figure(figsize=(4,4))
+            plt.title("Matriz de confusão")
+            sn.set(font_scale=1.4) 
+            sn.heatmap(matrizFormatada, annot=True, annot_kws={"size": 16}) 
+            plt.show()
 
     
     def realizar_treino_rede_neural(self):
@@ -259,9 +266,14 @@ class main:
         matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
         showinfo(message="Matrizes de co-ocorrência calculadas com sucesso!")
 
+
     def testar_rede_neural(self):
         if(self.metricas_rede):
-            showinfo(message=self.metricas_rede)
+            matrizFormatada = pd.DataFrame(self.metricas_rede[0], range(1, 5), range(1, 5))
+            plt.figure(figsize=(4,4))
+            sn.set(font_scale=1.4) 
+            sn.heatmap(matrizFormatada, annot=True, annot_kws={"size": 16}) 
+            plt.show()
 
 
     def classificar_imagem_svm(self):
