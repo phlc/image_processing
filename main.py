@@ -231,7 +231,7 @@ class main:
             descritoresTodasAsImagens = calcula_descritores_varias_imagens(matrizesDeTodasAsImagens)
             tempoFinal = time.time() - tempoInicial
             aviso = "Descritores calculados em {:.2f} segundos".format(tempoFinal)
-            showinfo(aviso)
+            showinfo(message=aviso)
 
         return descritoresTodasAsImagens
 
@@ -250,7 +250,7 @@ class main:
             matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
             tempoFinal = time.time() - tempoInicial
             aviso = "Matrizes calculadas em {:.2f} segundos".format(tempoFinal)
-            showinfo(aviso)
+            showinfo(message=aviso)
 
         return matrizesDeTodasAsImagens
 
@@ -261,7 +261,7 @@ class main:
         descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
         
         # Chamar o método para treinar a svm
-        [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_svm=True)
+        [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=4, gravar_svm=True)
 
         # salvar o modelo e as métricas obtidas
         self.modelo_svm = modelo
@@ -290,7 +290,7 @@ class main:
         descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
         
         # Realizar o treino da rede neural
-        [modelo, metricas] = treinar_rede_neural(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_rede=True)
+        [modelo, metricas] = treinar_rede_neural(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=4, gravar_rede=True)
 
         # Salvar as métricas e o modelo obtido
         self.modelo_rede = modelo
@@ -325,7 +325,7 @@ class main:
 
     def classificar_imagem_svm(self):
         # Classificar a imagem exibida no canvas utilizando a svm
-        classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
+        classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=4)
         # Exibir o resultado na tela
         mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
         showinfo(message=mensagem)
@@ -333,7 +333,7 @@ class main:
 
     def classificar_imagem_rede_neural(self):
         # Classificar a imagem exibida no canvas utilizando a rede neural
-        classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=3)
+        classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=4)
         # Exibir o resultado na tela
         mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
         showinfo(message=mensagem)

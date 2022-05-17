@@ -9,7 +9,7 @@ from sklearn import metrics
 # Treina e testa uma Rede Neural a partir de um conjunto de descritores de todas imagens
 # @param conjunto de descritores de todas imagens, número de descritores, opção gravar SVM em arquivo
 # @return [Rede Neural, metricas do teste]
-def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_rede=False):
+def treinar_rede_neural(descritores_todas_imagens, numero_descritores=4, gravar_rede=False):
     showinfo(message="Treino da Rede Neural iniciado!")
     tempoInicial = time.time()
     # Descritores separados por Birad
@@ -130,7 +130,7 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
 # Testa uma imagem em uma Rede Neural
 # @param modelo da rede neural, descritores da imagem, número de descritores
 # @return classificação
-def classificar_rede(modelo_rede, descritores, numero_descritores=3):
+def classificar_rede(modelo_rede, descritores, numero_descritores=4):
     instancia = np.reshape(descritores, numero_descritores*5)
     instancia = instancia.reshape(1, -1)
     return modelo_rede.predict(instancia).argmax(1) +1
