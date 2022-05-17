@@ -1,3 +1,4 @@
+import time
 from matplotlib.pyplot import table
 import numpy as np
 import pickle
@@ -11,6 +12,7 @@ from tkinter.messagebox import showinfo
 # @return [SVM, metricas do teste]
 def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=False):
     showinfo(message="Treino da SVM iniciado!")
+    tempoInicial = time.time()
     # Descritores separados por Birad
     birad1 = []
     birad2 = []
@@ -101,7 +103,11 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=Fals
         output_metricas = open('dados\\metricas_svm.pkl', 'wb')
         pickle.dump(metricas, output_metricas)
 
+    tempoFinal = (time.time() - tempoInicial)
+    metricas.append(tempoFinal)
+
     showinfo(message="Treino da SVM finalizado!")
+
     return(modelo_svm, metricas)
 
 
