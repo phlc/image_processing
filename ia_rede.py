@@ -109,7 +109,6 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
                 if (i != classe and j == classe):
                     fp += matriz[i][j]
         especificidade += vn /(vn+fp)
-    
     especificidade /= 4
     metricas.append(especificidade)
 

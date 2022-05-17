@@ -12,7 +12,7 @@ from sklearn import metrics
 # set_matrizes_todas_imagens = gm.calcula_matrizes_varias_imagens(gravar_arquivo="True")
 
 # Carregar set_matrizes_todas_imagens  do arquivo dataset_matrizes.pkl
-input = open('dados\\dataset_matrizes.pkl', 'rb')
+input = open('./dados/dataset_matrizes.pkl', 'rb')
 set_matrizes_todas_imagens = np.array(pickle.load(input))
 input.close()
 print("Arquivo dataset_matrizes.pkl carregado.")
@@ -30,19 +30,19 @@ descritores_uma_imagem = dh.calcula_descritores_uma_imagem(set_matrizes_uma_imag
 print("Descritores de haralick de uma imagem calculado.")
 
 # Treinar uma SVM (argumento numero_descritores Default)
-(modelo_svm, metricas) = ia_svm.treinar_svm(descritores_todas_imagens=descritores_todas_imagens, gravar_svm=True)
+(modelo_svm, metricas) = ia_svm.treinar_svm(descritores_todas_imagens=descritores_todas_imagens, numero_descritores=4, gravar_svm=False)
 print ("SVM treinada e testada.")
 
 # Classificar uma imagem com a SVM(a partir de seus descritores)
-classe = ia_svm.classificar_svm(modelo_svm, descritores_uma_imagem)
+classe = ia_svm.classificar_svm(modelo_svm, descritores_uma_imagem, numero_descritores=4)
 print("Uma imagem classificada (SVM)")
 
 # Treinar uma Rede Neura (argumento numero_descritores Default)
-(modelo_rede, metricas) = ia_rede.treinar_rede_neural(descritores_todas_imagens=descritores_todas_imagens, gravar_rede=True)
+(modelo_rede, metricas) = ia_rede.treinar_rede_neural(descritores_todas_imagens=descritores_todas_imagens, numero_descritores=4, gravar_rede=False)
 print("Rede Neural treinada e testada.")
 
 # Classificar uma imagem com a Rede Neural(a partir de seus descritores)
-classe = ia_rede.classificar_rede(modelo_rede, descritores_uma_imagem)
+classe = ia_rede.classificar_rede(modelo_rede, descritores_uma_imagem, numero_descritores=4)
 print("Uma imagem classificada (Rede Neural)")
 
 print(metricas)
