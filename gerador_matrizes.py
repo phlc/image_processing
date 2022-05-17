@@ -29,10 +29,12 @@ def calcula_matrizes_varias_imagens(diretorio="./imagens", gravar_arquivo=False,
             #Abrir Imagem
             image = cv2.imread(os.path.join(path,image_name), 0)
 
-            # Reamostrar imagem para 32 tons de cinza
+            # Selecionar tom mais claro da imagem
+            max = np.max(image)
+            # Reamostrar imagem para numero_tons tons de cinza
             for i in range(len(image)):
                 for j in range(len(image[0])):
-                    image[i][j] = int(image[i][j]/255 * numero_tons-1)  
+                    image[i][j] = int(image[i][j]/max * numero_tons-1)
 
             # Calcular descritores a partir das matrizes de coocorrência circulares C1, C2, C4, C8 e C16
             c1 = mc.c1(np.array(image), numero_tons)

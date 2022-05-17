@@ -67,7 +67,7 @@ class main:
         # Menu para cálculo das matrizes de coocorrência
         menuCoocor = Menu(menu)
         menu.add_cascade(label='Matrizes Treino', menu=menuCoocor)
-        menuCoocor.add_command(label='Calcular Matrizes de co-ocorrência Treino', command=self.calcular_matrizes_teste)
+        menuCoocor.add_command(label='Calcular Matrizes de Co-ocorrência Treino', command=self.calcular_matrizes_teste)
 
         # Menu da Rede Neural
         menuRede = Menu(menu)
