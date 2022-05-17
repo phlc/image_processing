@@ -265,7 +265,7 @@ class main:
             matrizFormatada = pd.DataFrame(self.metricas_svm[0], range(1, 5), range(1, 5))
             fig = plt.figure()
             # Adicionar métricas e título à janela auxiliar da matriz de confusão
-            metricas = 'Tempo execução: {:.2f}s / Sensibilidade: {:.2f} / Especificidade: {:.2f}'.format(self.metricas_svm[2], self.metricas_svm[1], self.metricas_svm[1])
+            metricas = 'Tempo execução: {:.2f}s / Sensibilidade: {:.2f} / Especificidade: {:.2f}'.format(self.metricas_svm[3], self.metricas_svm[1], self.metricas_svm[2])
             fig.suptitle(metricas, fontsize=10)
             plt.title("Matriz de confusão")
             sn.set(font_scale=1.4) 
@@ -304,7 +304,7 @@ class main:
             matrizFormatada = pd.DataFrame(self.metricas_rede[0], range(1, 5), range(1, 5))
             fig = plt.figure()
             # Exibir métricas e título na janela auxiliar 
-            metricas = 'Tempo execução: {:.2f}s / Sensibilidade: {:.2f} / Especificidade: {:.2f}'.format(self.metricas_rede[2], self.metricas_rede[1], self.metricas_rede[1])
+            metricas = 'Tempo execução: {:.2f}s / Sensibilidade: {:.2f} / Especificidade: {:.2f}'.format(self.metricas_rede[3], self.metricas_rede[1], self.metricas_rede[2])
             fig.suptitle(metricas, fontsize=10)
             plt.title("Matriz de confusão")
             # Criar o mapa de calor da matriz de confusão
