@@ -1,3 +1,5 @@
+import time
+from tkinter.messagebox import showinfo
 import tensorflow as tf
 from matplotlib.pyplot import table
 import numpy as np
@@ -9,14 +11,15 @@ from sklearn import metrics
 # @param conjunto de descritores de todas imagens, número de descritores, opção gravar SVM em arquivo
 # @return [Rede Neural, metricas do teste]
 def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_rede=False):
-    
+    showinfo(message="Treino da Rede Neural iniciado!")
+    tempoInicial = time.time()
     # Descritores separados por Birad
     birad1 = []
     birad2 = []
     birad3 = []
     birad4 = []
 
-    # Incluir em cada birad uma com os descritores de cada imagem, transformados em uma arranjo 1D e a classificação
+    # Incluir em cada birad uma lista com os descritores de cada imagem, transformados em uma arranjo 1D e a classificação
     #[arranjo descritores, classificação]
     for instance in range(len(descritores_todas_imagens[0])):
         birad1.append([np.reshape(descritores_todas_imagens[0][instance], numero_descritores*5), 0])
@@ -102,7 +105,10 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
         output_metricas = open('dados\\metricas_rede.pkl', 'wb')
         pickle.dump(metricas, output_metricas)
 
-
+    tempoFinal = time.time() - tempoInicial
+    metricas.append(tempoFinal)
+    showinfo(message="Treino da Rede Neural finalizado!")
+    
     return(modelo_rede, metricas)
 
 # Testa uma imagem em uma Rede Neural
