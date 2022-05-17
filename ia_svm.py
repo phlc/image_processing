@@ -97,12 +97,12 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=Fals
 
     # obter verdadeiro-negativo, falso-positivo, falso-negativo, verdadeiro-positivo
     # .ravel() retorna um array linear constendo os elementos do input
-    vn, fp, fn, vp = metrics.confusion_matrix(test_y, predictions).ravel()
+    # vn, fp, fn, vp = metrics.confusion_matrix(test_y, predictions).ravel()
     
-    # calculo da especificidade
-    especificidade = vn / (vn+fp)
+    # # calculo da especificidade
+    # especificidade = vn / (vn+fp)
 
-    metricas.append(especificidade)
+    # metricas.append(especificidade)
 
     # Gravar modelo
     if (gravar_svm):

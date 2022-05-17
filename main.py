@@ -187,15 +187,15 @@ class main:
 
         # Populando a tabela com os dados dos descritores
         tabelaDeDescritores.insert(parent='',index='end',iid=0,text='',
-        values=('C1',descritores[0][0],descritores[0][1],descritores[0][2]))
+        values=('C1',descritores[0][0],descritores[0][1],descritores[0][2],descritores[0][3]))
         tabelaDeDescritores.insert(parent='',index='end',iid=1,text='',
-        values=('C2',descritores[1][0],descritores[1][1],descritores[1][2]))
+        values=('C2',descritores[1][0],descritores[1][1],descritores[1][2],descritores[1][3]))
         tabelaDeDescritores.insert(parent='',index='end',iid=2,text='',
-        values=('C4',descritores[2][0],descritores[2][1],descritores[2][2]))
+        values=('C4',descritores[2][0],descritores[2][1],descritores[2][2],descritores[2][3]))
         tabelaDeDescritores.insert(parent='',index='end',iid=3,text='',
-        values=('C8',descritores[3][0],descritores[3][1],descritores[3][2]))
+        values=('C8',descritores[3][0],descritores[3][1],descritores[3][2],descritores[3][3]))
         tabelaDeDescritores.insert(parent='',index='end',iid=4,text='',
-        values=('C16',descritores[4][0],descritores[4][1],descritores[4][2]))
+        values=('C16',descritores[4][0],descritores[4][1],descritores[4][2],descritores[4][3]))
 
         tabelaDeDescritores.pack()
         
@@ -227,7 +227,12 @@ class main:
         except:
             # Caso o arquivo não exista, calcular os descritores do zero
             showinfo(message="Obtendo descritores...")
+            tempoInicial = time.time()
             descritoresTodasAsImagens = calcula_descritores_varias_imagens(matrizesDeTodasAsImagens)
+            tempoFinal = time.time() - tempoInicial
+            aviso = "Descritores calculados em {:.2f} segundos".format(tempoFinal)
+            showinfo(aviso)
+
         return descritoresTodasAsImagens
 
 
@@ -237,12 +242,16 @@ class main:
             matrizesDeTodasAsImagens_arquivo = open("dados\\dataset_matrizes.pkl", "rb")
             matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens_arquivo))
             matrizesDeTodasAsImagens_arquivo.close()
-
         except:
             # Caso o arquivo não exista, calcular as matrizes do zero
             diretorioImagens = self.selecionar_diretorio_imagens()
             showinfo(message="Obtendo matrizes de co-ocorrência...")
+            tempoInicial = time.time()
             matrizesDeTodasAsImagens = calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
+            tempoFinal = time.time() - tempoInicial
+            aviso = "Matrizes calculadas em {:.2f} segundos".format(tempoFinal)
+            showinfo(aviso)
+
         return matrizesDeTodasAsImagens
 
     
