@@ -303,8 +303,11 @@ class main:
         # Calcular as matrizes de coocorrência para todas as imagens do diretório selecionado e salvar
         # resultado em um arquivo
         showinfo(message="Calculando matrizes de co-ocorrência...")
+        tempoInicial = time.time()
         calcula_matrizes_varias_imagens(diretorioImagens, self.numeroDeTons)
-        showinfo(message="Matrizes de co-ocorrência calculadas com sucesso!")
+        tempoFinal = time.time() - tempoInicial
+        aviso = "Matrizes calculadas em {:.2f} segundos".format(tempoFinal)
+        showinfo(message=aviso)
 
 
     def testar_rede_neural(self):
