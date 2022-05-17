@@ -214,6 +214,7 @@ class main:
         # Exibir imagem reamostrada
         imagemReamostrada = plt.imshow(imagem, cmap='gray', vmax=(self.numeroDeTons))
         plt.colorbar(imagemReamostrada)
+        plt.grid(False)
         plt.show()
 
 
