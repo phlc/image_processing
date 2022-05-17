@@ -10,7 +10,7 @@ from tkinter.messagebox import showinfo
 # Treina e testa uma SVM a partir de um conjunto de descritores de todas imagens
 # @param conjunto de descritores de todas imagens, número de descritores, opção gravar SVM em arquivo
 # @return [SVM, metricas do teste]
-def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=False):
+def treinar_svm(descritores_todas_imagens, numero_descritores=4, gravar_svm=False):
     showinfo(message="Treino da SVM iniciado!")
     tempoInicial = time.time()
     # Descritores separados por Birad
@@ -130,7 +130,7 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=Fals
 # Testa uma imagem em uma SVM
 # @param modelo da svm, descritores da imagem, número de descritores
 # @return classificação
-def classificar_svm(modelo_svm, descritores, numero_descritores=3):
+def classificar_svm(modelo_svm, descritores, numero_descritores=4):
     instancia = np.reshape(descritores, numero_descritores*5)
     instancia = instancia.reshape(1, -1)
     return modelo_svm.predict(instancia)
