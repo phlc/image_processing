@@ -1,7 +1,6 @@
 import time
 from tkinter.messagebox import showinfo
 import tensorflow as tf
-from matplotlib.pyplot import table
 import numpy as np
 import pickle
 import random
@@ -98,10 +97,10 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
     metricas = [metrics.confusion_matrix(test_y, predictions), metrics.accuracy_score(test_y, predictions)]
 
     # obter verdadeiro-negativo, falso-positivo, falso-negativo, verdadeiro-positivo
-    # .ravel() retorna um array linear constendo os elementos do input
-    print(test_y)
-    print(predictions)
-    vn, fp, fn, vp = metrics.confusion_matrix(test_y, predictions).ravel()
+    # .ravel() retorna um array linear contendo os elementos do input
+    # print(test_y)
+    # print(predictions)
+    # vn, fp, fn, vp = metrics.confusion_matrix(test_y, predictions).ravel()
     
     # calculo da especificidade
     especificidade = vn / (vn+fp)
@@ -121,6 +120,7 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
     showinfo(message="Treino da Rede Neural finalizado!")
     
     return(modelo_rede, metricas)
+
 
 # Testa uma imagem em uma Rede Neural
 # @param modelo da rede neural, descritores da imagem, número de descritores
