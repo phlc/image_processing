@@ -96,15 +96,21 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
     predictions = modelo_rede.predict(test_X).argmax(1)
     metricas = [metrics.confusion_matrix(test_y, predictions), metrics.accuracy_score(test_y, predictions)]
 
-    # obter verdadeiro-negativo, falso-positivo, falso-negativo, verdadeiro-positivo
-    # .ravel() retorna um array linear contendo os elementos do input
-    # print(test_y)
-    # print(predictions)
-    # vn, fp, fn, vp = metrics.confusion_matrix(test_y, predictions).ravel()
+    # Cálculo Manual da especificidade (vn /(vn+fp))
+    matriz = metricas[0]
+    especificidade = 0.0
+    for classe in range(3):
+        vn = 0.0
+        fp = 0.0
+        for i in range(len(matriz)):
+            for j in range(len(matriz[0])):
+                if (i != classe and j != classe):
+                    vn += matriz[i][j]
+                if (i != classe and j == classe):
+                    fp += matriz[i][j]
+        especificidade += vn /(vn+fp)
     
-    # calculo da especificidade
-    especificidade = vn / (vn+fp)
-
+    especificidade /= 4
     metricas.append(especificidade)
 
     # Gravar modelo
