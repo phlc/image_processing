@@ -5,7 +5,7 @@ import matriz_circular
 # Calcula Entropia, Homogeneidade, Energia e Contraste de Haralick
 # @param matriz de co-ocorrência; Opções: homogeneidade, entropia, energia, contraste
 # @return [homogeneidade, entropia, energia, contraste]
-def __descritores(matriz, entropia=True, homogeneidade=True, energia=True, contraste=True ):
+def __descritores(matriz, entropia=True, homogeneidade=True, energia=True, contraste=False ):
     # Inicializações
     descritores = []
     valor_entropia = 0.0
@@ -45,7 +45,7 @@ def __descritores(matriz, entropia=True, homogeneidade=True, energia=True, contr
 # Calcula os descritores de Haralick para um conjunto de matrizes de várias imagens separadas por birads
 # @param lista 3D de [imagem][matrizes][matriz]
 # @return array de descritores de todas as imagens
-def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidade=True, energia=True, contraste=True):
+def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidade=True, energia=True, contraste=False):
     # Lista de lista de descritores para cada matriz
     set_descritores = []
 
@@ -66,7 +66,7 @@ def calcula_descritores_varias_imagens(set_matrizes, entropia=True, homogeneidad
 # Calcula os descritores de Haralick para um conjunto de matrizes uma imagem
 # @param lista 2d de [matrizes][matriz] 
 # @return array de descritores da imagem
-def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, energia=True, contraste=True):
+def calcula_descritores_uma_imagem(matrizes, entropia=True, homogeneidade=True, energia=True, contraste=False):
     # Lista de descritores para cada matriz
     descritores_imagem = []
 

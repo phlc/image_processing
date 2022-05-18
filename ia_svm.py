@@ -10,7 +10,7 @@ from tkinter.messagebox import showinfo
 # Treina e testa uma SVM a partir de um conjunto de descritores de todas imagens
 # @param conjunto de descritores de todas imagens, número de descritores, opção gravar SVM em arquivo
 # @return [SVM, metricas do teste]
-def treinar_svm(descritores_todas_imagens, numero_descritores=4, gravar_svm=False):
+def treinar_svm(descritores_todas_imagens, numero_descritores=3, gravar_svm=False):
     showinfo(message="Treino da SVM iniciado!")
     tempoInicial = time.time()
     # Descritores separados por Birad
@@ -44,8 +44,6 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=4, gravar_svm=Fals
         training_data.append(birad3[instance])
         training_data.append(birad4[instance])
 
-    training_data = np.array(training_data, dtype=object)
-
     # Separação do conjunto de teste (25 instâncias de cada birad)
     for instance in range(75, 100):
         test_data.append(birad1[instance])
@@ -53,13 +51,13 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=4, gravar_svm=Fals
         test_data.append(birad3[instance])
         test_data.append(birad4[instance])
 
-    test_data = np.array(test_data, dtype=object)
-
 
     # Embaralhar os conjuntos para não ficar em ordem por Birad
     random.shuffle(training_data)
     random.shuffle(test_data)
 
+    test_data = np.array(test_data, dtype=object)
+    training_data = np.array(training_data, dtype=object)
 
     # Separar descritores das classificações - Treino
     train_X = [] #descritores
@@ -130,7 +128,7 @@ def treinar_svm(descritores_todas_imagens, numero_descritores=4, gravar_svm=Fals
 # Testa uma imagem em uma SVM
 # @param modelo da svm, descritores da imagem, número de descritores
 # @return classificação
-def classificar_svm(modelo_svm, descritores, numero_descritores=4):
+def classificar_svm(modelo_svm, descritores, numero_descritores=3):
     instancia = np.reshape(descritores, numero_descritores*5)
     instancia = instancia.reshape(1, -1)
     return modelo_svm.predict(instancia)

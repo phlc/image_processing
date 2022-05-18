@@ -30,19 +30,19 @@ descritores_uma_imagem = dh.calcula_descritores_uma_imagem(set_matrizes_uma_imag
 print("Descritores de haralick de uma imagem calculado.")
 
 # Treinar uma SVM (argumento numero_descritores Default)
-(modelo_svm, metricas) = ia_svm.treinar_svm(descritores_todas_imagens=descritores_todas_imagens, numero_descritores=4, gravar_svm=False)
+(modelo_svm, metricas) = ia_svm.treinar_svm(descritores_todas_imagens=descritores_todas_imagens, numero_descritores=3, gravar_svm=False)
 print ("SVM treinada e testada.")
 
 # Classificar uma imagem com a SVM(a partir de seus descritores)
-classe = ia_svm.classificar_svm(modelo_svm, descritores_uma_imagem, numero_descritores=4)
+classe = ia_svm.classificar_svm(modelo_svm, descritores_uma_imagem, numero_descritores=3)
 print("Uma imagem classificada (SVM)")
 
 # Treinar uma Rede Neura (argumento numero_descritores Default)
-(modelo_rede, metricas) = ia_rede.treinar_rede_neural(descritores_todas_imagens=descritores_todas_imagens, numero_descritores=4, gravar_rede=False)
+(modelo_rede, metricas) = ia_rede.treinar_rede_neural(descritores_todas_imagens=descritores_todas_imagens, numero_descritores=3, gravar_rede=False)
 print("Rede Neural treinada e testada.")
 
 # Classificar uma imagem com a Rede Neural(a partir de seus descritores)
-classe = ia_rede.classificar_rede(modelo_rede, descritores_uma_imagem, numero_descritores=4)
+classe = ia_rede.classificar_rede(modelo_rede, descritores_uma_imagem, numero_descritores=3)
 print("Uma imagem classificada (Rede Neural)")
 
 print(metricas)
