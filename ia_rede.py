@@ -9,7 +9,7 @@ from sklearn import metrics
 # Treina e testa uma Rede Neural a partir de um conjunto de descritores de todas imagens
 # @param conjunto de descritores de todas imagens, número de descritores, opção gravar SVM em arquivo
 # @return [Rede Neural, metricas do teste]
-def treinar_rede_neural(descritores_todas_imagens, numero_descritores=4, gravar_rede=False):
+def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_rede=False):
     showinfo(message="Treino da Rede Neural iniciado!")
     tempoInicial = time.time()
     # Descritores separados por Birad
@@ -42,8 +42,7 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=4, gravar_
         training_data.append(birad2[instance])
         training_data.append(birad3[instance])
         training_data.append(birad4[instance])
-
-    training_data = np.array(training_data, dtype=object)
+    
 
     # Separação do conjunto de teste (25 instâncias de cada birad)
     for instance in range(75, 100):
@@ -52,13 +51,13 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=4, gravar_
         test_data.append(birad3[instance])
         test_data.append(birad4[instance])
 
-    test_data = np.array(test_data, dtype=object)
-
 
     # Embaralhar os conjuntos para não ficar em ordem por Birad
     random.shuffle(training_data)
     random.shuffle(test_data)
 
+    training_data = np.array(training_data, dtype=object)
+    test_data = np.array(test_data, dtype=object)
 
     # Separar descritores das classificações - Treino
     train_X = [] #descritores
@@ -130,7 +129,7 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=4, gravar_
 # Testa uma imagem em uma Rede Neural
 # @param modelo da rede neural, descritores da imagem, número de descritores
 # @return classificação
-def classificar_rede(modelo_rede, descritores, numero_descritores=4):
+def classificar_rede(modelo_rede, descritores, numero_descritores=3):
     instancia = np.reshape(descritores, numero_descritores*5)
     instancia = instancia.reshape(1, -1)
     return modelo_rede.predict(instancia).argmax(1) +1

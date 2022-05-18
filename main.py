@@ -168,14 +168,13 @@ class main:
 
         # Instanciação da tabela e definição das suas colunas
         tabelaDeDescritores = Treeview(table_frame)
-        tabelaDeDescritores['columns'] = ('Matriz de Co-ocorrência','Homogeneidade', 'Entropia', 'Energia', 'Contraste')
+        tabelaDeDescritores['columns'] = ('Matriz de Co-ocorrência','Homogeneidade', 'Entropia', 'Energia')
 
         tabelaDeDescritores.column("#0", width=0,  stretch=NO)
         tabelaDeDescritores.column("Matriz de Co-ocorrência",anchor=CENTER, width=140)
         tabelaDeDescritores.column("Homogeneidade",anchor=CENTER,width=120)
         tabelaDeDescritores.column("Entropia",anchor=CENTER,width=120)
         tabelaDeDescritores.column("Energia",anchor=CENTER,width=120)
-        tabelaDeDescritores.column("Contraste",anchor=CENTER,width=120)
 
         # Criação do cabeçalho da tabela
         tabelaDeDescritores.heading("#0",text="",anchor=CENTER)
@@ -183,19 +182,18 @@ class main:
         tabelaDeDescritores.heading("Homogeneidade",text="Homogeneidade",anchor=CENTER)
         tabelaDeDescritores.heading("Entropia",text="Entropia",anchor=CENTER)
         tabelaDeDescritores.heading("Energia",text="Energia",anchor=CENTER)
-        tabelaDeDescritores.heading("Contraste",text="Contraste",anchor=CENTER)
 
         # Populando a tabela com os dados dos descritores
         tabelaDeDescritores.insert(parent='',index='end',iid=0,text='',
-        values=('C1',descritores[0][0],descritores[0][1],descritores[0][2],descritores[0][3]))
+        values=('C1',descritores[0][0],descritores[0][1],descritores[0][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=1,text='',
-        values=('C2',descritores[1][0],descritores[1][1],descritores[1][2],descritores[1][3]))
+        values=('C2',descritores[1][0],descritores[1][1],descritores[1][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=2,text='',
-        values=('C4',descritores[2][0],descritores[2][1],descritores[2][2],descritores[2][3]))
+        values=('C4',descritores[2][0],descritores[2][1],descritores[2][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=3,text='',
-        values=('C8',descritores[3][0],descritores[3][1],descritores[3][2],descritores[3][3]))
+        values=('C8',descritores[3][0],descritores[3][1],descritores[3][2]))
         tabelaDeDescritores.insert(parent='',index='end',iid=4,text='',
-        values=('C16',descritores[4][0],descritores[4][1],descritores[4][2],descritores[4][3]))
+        values=('C16',descritores[4][0],descritores[4][1],descritores[4][2]))
 
         tabelaDeDescritores.pack()
         
@@ -261,7 +259,7 @@ class main:
         descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
         
         # Chamar o método para treinar a svm
-        [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=4, gravar_svm=True)
+        [modelo, metricas] = treinar_svm(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_svm=True)
 
         # salvar o modelo e as métricas obtidas
         self.modelo_svm = modelo
@@ -290,7 +288,7 @@ class main:
         descritoresTodasAsImagens = self.obter_descritores_das_imagens(matrizesDeTodasAsImagens)
         
         # Realizar o treino da rede neural
-        [modelo, metricas] = treinar_rede_neural(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=4, gravar_rede=True)
+        [modelo, metricas] = treinar_rede_neural(descritores_todas_imagens=descritoresTodasAsImagens, numero_descritores=3, gravar_rede=True)
 
         # Salvar as métricas e o modelo obtido
         self.modelo_rede = modelo
@@ -328,7 +326,7 @@ class main:
 
     def classificar_imagem_svm(self):
         # Classificar a imagem exibida no canvas utilizando a svm
-        classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=4)
+        classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
         # Exibir o resultado na tela
         mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
         showinfo(message=mensagem)
@@ -336,7 +334,7 @@ class main:
 
     def classificar_imagem_rede_neural(self):
         # Classificar a imagem exibida no canvas utilizando a rede neural
-        classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=4)
+        classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=3)
         # Exibir o resultado na tela
         mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
         showinfo(message=mensagem)
