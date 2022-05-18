@@ -1,4 +1,5 @@
 import time
+import os
 from tkinter.messagebox import showinfo
 import tensorflow as tf
 import numpy as np
@@ -113,10 +114,10 @@ def treinar_rede_neural(descritores_todas_imagens, numero_descritores=3, gravar_
 
     # Gravar modelo
     if (gravar_rede):
-        output_rede = open('dados\\rede.pkl', 'wb')
+        output_rede = open(os.path.join('dados','rede.pkl'), 'wb')
         pickle.dump(modelo_rede, output_rede)
 
-        output_metricas = open('dados\\metricas_rede.pkl', 'wb')
+        output_metricas = open(os.path.join('dados','metricas_rede.pkl'), 'wb')
         pickle.dump(metricas, output_metricas)
 
     tempoFinal = time.time() - tempoInicial

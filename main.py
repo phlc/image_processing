@@ -8,6 +8,7 @@
 # Data de entrega: 18/05/22
 
 import pickle
+import os
 from tkinter.ttk import Treeview
 import numpy as np
 from PIL import ImageTk
@@ -219,7 +220,7 @@ class main:
     def obter_descritores_das_imagens(self, matrizesDeTodasAsImagens):
         try:
             # Tentar ler o arquivo de descritores caso esse exista
-            descritoresTodasAsImagens_arquivo = open("dados\\dataset.pkl", "rb")
+            descritoresTodasAsImagens_arquivo = open(os.path.join("dados","dataset.pkl"), "rb")
             descritoresTodasAsImagens = np.array(pickle.load(descritoresTodasAsImagens_arquivo))
             descritoresTodasAsImagens_arquivo.close()
         except:
@@ -237,7 +238,7 @@ class main:
     def obter_matrizes_coocorrencia(self):
         try:
             # Tentar obter as matrizes de coocorrência do arquivo caso este exista
-            matrizesDeTodasAsImagens_arquivo = open("dados\\dataset_matrizes.pkl", "rb")
+            matrizesDeTodasAsImagens_arquivo = open(os.path.join("dados","dataset_matrizes.pkl"), "rb")
             matrizesDeTodasAsImagens = np.array(pickle.load(matrizesDeTodasAsImagens_arquivo))
             matrizesDeTodasAsImagens_arquivo.close()
         except:

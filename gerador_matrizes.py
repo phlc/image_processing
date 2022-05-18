@@ -8,7 +8,7 @@ import matriz_circular as mc
 # Calcula todas as matrizes de co-ocorrência de todas as imagens de um diretório com 4 pastas de birads
 # @param path do diretório, opção de salvar em arquivo, número de tons de cinza para reamostragem
 # @return lista de listas de birads cada um com a lista das matrizes de cada imagem no diretório
-def calcula_matrizes_varias_imagens(diretorio="./imagens", gravar_arquivo=False, numero_tons=32):
+def calcula_matrizes_varias_imagens(diretorio="imagens", gravar_arquivo=False, numero_tons=32):
     # Declarações
     BIRADS = ["1", "2", "3", "4"]
     dataset = [[], [], [], []] #uma lista de matrizes para cada imagem em cada birad
@@ -50,7 +50,7 @@ def calcula_matrizes_varias_imagens(diretorio="./imagens", gravar_arquivo=False,
 
     # Gravar datatset
     if (gravar_arquivo):
-        output = open('dados\\dataset_matrizes.pkl', 'wb')
+        output = open(os.path.join('dados','dataset_matrizes.pkl'), 'wb')
         pickle.dump(dataset, output)
 
     return dataset
