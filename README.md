@@ -10,10 +10,20 @@ Atenção: para utilizar o presente software é recomendada a versão do python 
 
 # Install python via chocolatey
 choco install python --version=3.8.4
-# Install pip:
+# Install pip
 python -m pip install -U pip
-# Install scikit-image
-python -m pip install -U scikit-image
+# Install scikit-learn
+pip install -U scikit-learn
+# Install Pillow
+pip install Pillow
+# Install pickle
+pip install pickle5
+# Install tkinter
+pip install tk
+# Install tensorflow
+pip install tensorflow
+# Install numpy
+pip install numpy
 
 # Executar o software
 via linha de comando:
