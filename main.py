@@ -267,7 +267,7 @@ class main:
 
 
     def testar_svm(self):
-        if(self.metricas_svm):
+        try:
             # Formatar a matriz de confusão
             matrizFormatada = pd.DataFrame(self.metricas_svm[0], range(1, 5), range(1, 5))
             fig = plt.figure()
@@ -280,6 +280,9 @@ class main:
             sn.heatmap(matrizFormatada, annot=True, annot_kws={"size": 16}) 
             # Mostrar a janela auxiliar com todas as informações
             plt.show()
+        except:
+            mensagem = "Você precisa treinar a SVM primeiro."
+            showinfo(message=mensagem)
 
     
     def realizar_treino_rede_neural(self):
@@ -309,7 +312,7 @@ class main:
 
 
     def testar_rede_neural(self):
-        if(self.metricas_rede):
+        try:
             # Formatar a matriz de confusão da rede neural
             matrizFormatada = pd.DataFrame(self.metricas_rede[0], range(1, 5), range(1, 5))
             fig = plt.figure()
@@ -322,22 +325,33 @@ class main:
             sn.heatmap(matrizFormatada, annot=True, annot_kws={"size": 16}) 
             # Exibir a janela auxiliar contendo todas as informações
             plt.show()
+        except:
+            mensagem = "Você precisa treinar a rede primeiro."
+            showinfo(message=mensagem)
 
 
     def classificar_imagem_svm(self):
-        # Classificar a imagem exibida no canvas utilizando a svm
-        classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
-        # Exibir o resultado na tela
-        mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
-        showinfo(message=mensagem)
+        try:
+            # Classificar a imagem exibida no canvas utilizando a svm
+            classeDaImagem = classificar_svm(modelo_svm=self.modelo_svm, descritores=self.descritoresImagemExibida, numero_descritores=3)
+            # Exibir o resultado na tela
+            mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
+            showinfo(message=mensagem)
+        except:
+            mensagem = "Você precisa calcular os descritores da imagem e treinar a SVM antes de classificar."
+            showinfo(message=mensagem)
 
 
     def classificar_imagem_rede_neural(self):
-        # Classificar a imagem exibida no canvas utilizando a rede neural
-        classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=3)
-        # Exibir o resultado na tela
-        mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
-        showinfo(message=mensagem)
+        try:
+            # Classificar a imagem exibida no canvas utilizando a rede neural
+            classeDaImagem = classificar_rede(modelo_rede=self.modelo_rede, descritores=self.descritoresImagemExibida, numero_descritores=3)
+            # Exibir o resultado na tela
+            mensagem = "A imagem pertence à classe de BIRAD " + str(classeDaImagem)
+            showinfo(message=mensagem)
+        except:
+            mensagem = "Você precisa calcular os descritores da imagem e treinar a rede antes de classificar."
+            showinfo(message=mensagem)
 
 
 if __name__ == '__main__':
